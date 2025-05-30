@@ -74,9 +74,6 @@ Copy and paste this single command to install automatically:
 ```bash
 # Using curl (recommended)
 bash <(curl -fsSL https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/setup.sh)
-
-# Or using wget
-bash <(wget -qO- https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/setup.sh)
 ```
 
 That's it! The script will:
