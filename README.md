@@ -25,7 +25,7 @@
 Clone zsh-pnpm-completions into your custom plugins repo
 
 ```bash
-git clone https://github.com/your-username/zsh-pnpm-completions ~/.oh-my-zsh/custom/plugins/zsh-pnpm-completions
+git clone https://github.com/michakfromparis/zsh-pnpm-completions ~/.oh-my-zsh/custom/plugins/zsh-pnpm-completions
 ```
 
 Then load as a plugin in your `.zshrc`
@@ -37,13 +37,13 @@ plugins+=(zsh-pnpm-completions)
 ### Using Antigen
 
 ```bash
-antigen bundle your-username/zsh-pnpm-completions
+antigen bundle michakfromparis/zsh-pnpm-completions
 ```
 
 ### Using zplug
 
 ```bash
-zplug "your-username/zsh-pnpm-completions", defer:2
+zplug "michakfromparis/zsh-pnpm-completions", defer:2
 ```
 
 ### Manually
@@ -51,7 +51,7 @@ zplug "your-username/zsh-pnpm-completions", defer:2
 Clone this repository somewhere (`~/.zsh-pnpm-completions` for example)
 
 ```bash
-git clone https://github.com/your-username/zsh-pnpm-completions.git ~/.zsh-pnpm-completions
+git clone https://github.com/michakfromparis/zsh-pnpm-completions.git ~/.zsh-pnpm-completions
 ```
 
 Then source it in your `.zshrc`
