@@ -145,8 +145,23 @@ _pnpm_completion_global_commands() {
 }
 
 _pnpm_get_cached_packages() {
-  # Use pnpm store to get cached packages
-  pnpm store list | grep "^[a-zA-Z]" | awk '{print $1}' | sort -u
+  # Provide a list of common popular packages
+  local packages="react vue angular express lodash axios moment typescript eslint prettier webpack babel jest mocha chai next nuxt svelte solid react-dom react-router-dom"
+  
+  # Try to get recently used packages from pnpm store if available
+  local store_path
+  store_path=$(pnpm store path 2>/dev/null)
+  if [[ -n "$store_path" ]] && [[ -d "$store_path" ]]; then
+    # Extract package names from store directory structure
+    local recent_packages
+    recent_packages=$(find "$store_path" -name "package.json" -exec jq -r '.name // empty' {} \; 2>/dev/null | sort -u | head -20)
+    if [[ -n "$recent_packages" ]]; then
+      packages="$packages $recent_packages"
+    fi
+  fi
+  
+  # Return unique sorted packages
+  echo "$packages" | tr ' ' '\n' | sort -u | grep -v '^$'
 }
 
 _pnpm_get_workspaces() {
@@ -562,4 +577,41 @@ _pnpm_completion() {
 
 }
 
-compdef _pnpm_completion pnpm 
+compdef _pnpm_completion pnpm
+
+# Set up completion for aliases
+compdef _pnpm_completion p
+compdef _pnpm_completion pa
+compdef _pnpm_completion pi
+compdef _pnpm_completion pad
+compdef _pnpm_completion pga
+compdef _pnpm_completion pr
+compdef _pnpm_completion prm
+compdef _pnpm_completion pgr
+compdef _pnpm_completion pu
+compdef _pnpm_completion pup
+compdef _pnpm_completion pug
+compdef _pnpm_completion pl
+compdef _pnpm_completion pul
+compdef _pnpm_completion px
+compdef _pnpm_completion pdx
+compdef _pnpm_completion prun
+compdef _pnpm_completion pt
+compdef _pnpm_completion ps
+compdef _pnpm_completion pb
+compdef _pnpm_completion pd
+compdef _pnpm_completion pout
+compdef _pnpm_completion pwhy
+compdef _pnpm_completion pls
+compdef _pnpm_completion paudit
+compdef _pnpm_completion pstore
+compdef _pnpm_completion pconfig
+compdef _pnpm_completion penv
+compdef _pnpm_completion ppatch
+compdef _pnpm_completion ppub
+compdef _pnpm_completion pinit
+compdef _pnpm_completion pcreate
+compdef _pnpm_completion pprune
+compdef _pnpm_completion prefresh
+compdef _pnpm_completion pcheck
+compdef _pnpm_completion pclean 
