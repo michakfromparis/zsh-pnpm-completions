@@ -1,16 +1,17 @@
 # zsh pnpm completions
 
 > pnpm completions for Z-shell that supports `pnpm workspaces`
+> I was tired of typing pnpm...
 
 ## What it does
 
+* Completes script names from `package.json`
 * Completes for all pnpm commands and subcommands
 * Completes default flags and options
 * `add` recommends packages from cache
 * `remove` | `update` | `upgrade` recommends packages from _package.json_
 * Support `global` completion
 * Support workspaces via `pnpm-workspace.yaml`
-* Complete script names from `package.json`
 * Support for pnpm-specific commands like `dlx`, `exec`, `patch`, etc.
 
 ## Requirements
