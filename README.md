@@ -202,7 +202,7 @@ prun test          # Same as: pnpm run test
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please feel free to open Issues or submit a Pull Request.
 
 ## License
 
