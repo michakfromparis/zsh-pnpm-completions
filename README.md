@@ -101,6 +101,16 @@ Then source it in your `.zshrc`
 source ~/.zsh-pnpm-completions/zsh-pnpm-completions.plugin.zsh
 ```
 
+## 🛠️ **Recommended Tools**
+
+These tools work beautifully with pnpm completions and will enhance your terminal experience:
+
+### [Powerlevel10k](https://github.com/romkatv/powerlevel10k) 
+The fastest and most customizable zsh theme. Perfect companion for productive development with excellent git integration and performance.
+
+### [Oh My Zsh](https://ohmyz.sh/)
+The most popular zsh framework with hundreds of plugins and themes. Makes zsh configuration easy and this plugin works seamlessly with it.
+
 ## 🎮 **Power User Features**
 
 ### 🔍 **Smart Package Discovery**
