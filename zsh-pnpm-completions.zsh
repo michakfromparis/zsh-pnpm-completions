@@ -148,26 +148,61 @@ _pnpm_get_cached_packages() {
   local search_term="${words[CURRENT]}"
   local packages=""
   
-  # If user has typed something, search npm registry for matching packages
+  # If user has typed something, search npm registry with multiple strategies
   if [[ -n "$search_term" && ${#search_term} -ge 2 ]]; then
-    # Use npm search to find packages matching the search term
-    packages=$(timeout 3 npm search "$search_term" --json 2>/dev/null | jq -r '.[].name' 2>/dev/null | head -20)
+    # Strategy 1: Exact search term
+    packages=$(timeout 3 npm search "$search_term" --json 2>/dev/null | jq -r '.[].name' 2>/dev/null | head -15)
     
-    # If npm search fails or returns nothing, try a broader search
-    if [[ -z "$packages" ]]; then
-      packages=$(timeout 3 npm search "${search_term}*" --json 2>/dev/null | jq -r '.[].name' 2>/dev/null | head -15)
+    # Strategy 2: Wildcard search if exact search didn't return much
+    if [[ $(echo "$packages" | wc -l) -lt 5 ]]; then
+      local wildcard_packages
+      wildcard_packages=$(timeout 3 npm search "${search_term}*" --json 2>/dev/null | jq -r '.[].name' 2>/dev/null | head -15)
+      packages="$packages $wildcard_packages"
     fi
+    
+    # Strategy 3: Try common package name patterns
+    case "$search_term" in
+      stri*)
+        packages="$packages stripe string-width strip-ansi stringify"
+        ;;
+      reac*)
+        packages="$packages react react-dom react-router-dom react-scripts"
+        ;;
+      typ*)
+        packages="$packages typescript @types/node @types/react"
+        ;;
+      expre*)
+        packages="$packages express express-validator"
+        ;;
+      vue*)
+        packages="$packages vue @vue/cli vue-router vuex"
+        ;;
+      ang*)
+        packages="$packages angular @angular/core @angular/cli"
+        ;;
+      nex*)
+        packages="$packages next nextjs @next/font"
+        ;;
+    esac
   fi
+  
+  # Enhanced popular packages list with more common packages
+  local popular_packages="react vue angular express lodash axios moment typescript eslint prettier webpack babel jest mocha chai next nuxt svelte solid react-dom react-router-dom @types/node @types/react vite nodemon cors dotenv uuid bcrypt jsonwebtoken stripe socket.io mongoose sequelize prisma tailwindcss bootstrap styled-components @emotion/react framer-motion three @testing-library/react vitest playwright"
   
   # If no search term or search failed, provide popular packages that match the prefix
   if [[ -z "$packages" ]]; then
-    local popular_packages="react vue angular express lodash axios moment typescript eslint prettier webpack babel jest mocha chai next nuxt svelte solid react-dom react-router-dom @types/node @types/react vite nodemon cors dotenv uuid bcrypt jsonwebtoken"
-    
     # Filter popular packages by search term if provided
     if [[ -n "$search_term" ]]; then
-      packages=$(echo "$popular_packages" | tr ' ' '\n' | grep -i "^$search_term" | head -10)
+      packages=$(echo "$popular_packages" | tr ' ' '\n' | grep -i "^$search_term" | head -15)
     else
       packages="$popular_packages"
+    fi
+  else
+    # Combine npm search results with matching popular packages
+    local matching_popular
+    matching_popular=$(echo "$popular_packages" | tr ' ' '\n' | grep -i "^$search_term" | head -10)
+    if [[ -n "$matching_popular" ]]; then
+      packages="$packages $matching_popular"
     fi
   fi
   
@@ -189,8 +224,16 @@ _pnpm_get_cached_packages() {
     fi
   fi
   
-  # Return unique sorted packages
-  echo "$packages" | tr ' ' '\n' | sort -u | grep -v '^$' | head -30
+  # Return unique sorted packages, prioritizing exact matches at the top
+  if [[ -n "$search_term" ]]; then
+    # Show exact matches first, then other matches
+    local exact_matches other_matches
+    exact_matches=$(echo "$packages" | tr ' ' '\n' | grep -i "^$search_term$" | sort -u)
+    other_matches=$(echo "$packages" | tr ' ' '\n' | grep -i "^$search_term" | grep -v -i "^$search_term$" | sort -u)
+    echo -e "$exact_matches\n$other_matches" | grep -v '^$' | head -30
+  else
+    echo "$packages" | tr ' ' '\n' | sort -u | grep -v '^$' | head -30
+  fi
 }
 
 _pnpm_get_workspaces() {
