@@ -1,30 +1,32 @@
 # zsh pnpm completions
 
-> The most intelligent pnpm completions for Z-shell with **live npm registry search** and workspace support
+> Smart pnpm completions for Z-shell with live npm search and workspace support
 > I was tired of typing pnpm...
 
-## ⚡ **Why This is Special**
+## ⚡ **Why This Helps**
 
-**🔍 Live npm Registry Search** - Type `pnpm add stri<TAB>` and get real packages from npmjs.com including `stripe`, `string-width`, and more. No more guessing package names!
+**📝 Script Completion** - Type `pnpm run <TAB>` and instantly see all your package.json scripts. No more `cat package.json | grep scripts`.
 
-**🧠 Intelligent Suggestions** - Smart pattern matching recognizes common prefixes:
+**🔍 Live npm Search** - Type `pnpm add loda<TAB>` and get real packages from npmjs.com including `lodash`, `lodash-es`, and related packages.
+
+**🧠 Smart Suggestions** - Recognizes common patterns:
 - `reac` → `react`, `react-dom`, `react-router-dom`
 - `typ` → `typescript`, `@types/node`, `@types/react` 
-- `stri` → `stripe`, `string-width`, `strip-ansi`
+- `loda` → `lodash`, `lodash-es`, `lodash.get`
 
-**⚡ Blazing Fast** - 3-second timeout ensures completions never hang, with smart fallbacks to popular packages
+**⚡ Fast & Reliable** - 3-second timeout with smart fallbacks to popular packages
 
 **🎯 Context-Aware** - Knows the difference between `pnpm add` (suggests new packages) and `pnpm remove` (suggests installed packages)
 
-**🏢 Workspace Native** - Full `pnpm workspace` support with workspace-aware completions
+**🏢 Workspace Ready** - Full `pnpm workspace` support with workspace-aware completions
 
-**📦 30+ Curated Aliases** - Every command has a short alias: `pa` = `pnpm add`, `pi` = `pnpm install`, etc.
+**📦 30+ Aliases** - Every command has a short alias: `pa` = `pnpm add`, `pi` = `pnpm install`, etc.
 
 ## 🚀 **What it does**
 
+* **Script completion** from your `package.json` - the killer feature
 * **Live package search** from npm registry as you type
-* **Smart fallback** to 50+ popular packages (React, Vue, TypeScript, Stripe, Prisma, etc.)
-* **Complete script names** from your `package.json`
+* **Smart fallback** to 50+ popular packages (React, Vue, TypeScript, Express, etc.)
 * **Workspace-aware** completions via `pnpm-workspace.yaml`
 * **Global package** completion for `-g` commands
 * **All pnpm commands** including `dlx`, `patch`, `store`, `env`
@@ -34,17 +36,17 @@
 ## 🎯 **Live Demo**
 
 ```bash
+# 📝 Script completion from package.json (killer feature!)
+pnpm run <TAB>
+# → test, build, dev, start, lint, deploy
+
 # 🔍 Live npm search as you type
-pnpm add stri<TAB>
-# → stripe, string-width, strip-ansi, stringify
+pnpm add loda<TAB>
+# → lodash, lodash-es, lodash.get, lodash.merge
 
 # ⚡ Smart patterns
 pa reac<TAB>
 # → react, react-dom, react-router-dom, react-scripts
-
-# 📦 Script completion  
-pnpm run <TAB>
-# → test, build, dev, start (from your package.json)
 
 # 🗑️ Remove installed packages
 pnpm remove <TAB>
@@ -219,14 +221,14 @@ Complete support for all pnpm commands with intelligent context-aware completion
 ## 🎯 **Examples**
 
 ```bash
-# 🔍 Live package search with real npm packages
-pnpm add reac<TAB>        # → react, react-dom, @types/react, etc.
-pa stri<TAB>              # → stripe, string-width, stringify
-pnpm add @types<TAB>      # → @types/node, @types/react, etc.
-
-# 📝 Script completion from package.json
+# 📝 Script completion from package.json (the killer feature!)
 pnpm run <TAB>            # → test, build, dev, start, lint
 prun test<TAB>            # → test, test:unit, test:e2e
+
+# 🔍 Live package search with real npm packages
+pnpm add reac<TAB>        # → react, react-dom, @types/react, etc.
+pa loda<TAB>              # → lodash, lodash-es, lodash.get
+pnpm add @types<TAB>      # → @types/node, @types/react, etc.
 
 # 🗑️ Remove only installed packages
 pnpm remove <TAB>         # → lodash, express (only from package.json)
