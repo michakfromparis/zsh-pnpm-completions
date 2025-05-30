@@ -6,13 +6,26 @@ Set Height 600
 Set PlaybackSpeed 2.0
 Set Theme "Dracula"
 
-Ctrl+L
-Type "# Lightning Fast Aliases Demo"
+# Load user's zsh config for custom prompt
+Type "source ~/.zshrc"
+Enter
+# Initialize completion system and load plugin
+Type "autoload -U compinit && compinit"
+Enter
+Type "source ../zsh-pnpm-completions.plugin.zsh"
 Enter
 Sleep 1s
+Ctrl+L
+
+Type "# Lightning Fast Aliases Demo"
+Sleep 1s
+Ctrl+A
+Ctrl+K
 
 Type "# Full commands:"
-Enter
+Sleep 1s
+Ctrl+A
+Ctrl+K
 Type "pnpm run build:prod"
 Enter
 Sleep 1s
@@ -21,7 +34,9 @@ Enter
 Sleep 1s
 
 Type "# With aliases:"
-Enter
+Sleep 1s
+Ctrl+A
+Ctrl+K
 Type "p build:prod"
 Enter
 Sleep 1s
