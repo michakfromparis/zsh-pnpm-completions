@@ -1,0 +1,27 @@
+{
+  "name": "example-project",
+  "version": "1.0.0",
+  "description": "Example project for testing pnpm completions",
+  "scripts": {
+    "build": "echo 'Building project...'",
+    "dev": "echo 'Starting development server...'",
+    "test": "echo 'Running tests...'",
+    "lint": "echo 'Linting code...'",
+    "format": "echo 'Formatting code...'",
+    "start": "echo 'Starting application...'",
+    "build:prod": "echo 'Building for production...'",
+    "test:watch": "echo 'Running tests in watch mode...'",
+    "clean": "echo 'Cleaning build files...'"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "axios": "^1.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^2.8.0",
+    "@types/node": "^18.0.0"
+  }
+} 
