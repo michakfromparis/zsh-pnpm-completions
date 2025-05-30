@@ -43,6 +43,7 @@ Type "# Slow 🐌! Error prone ❌! Tired fingers 😩"
 Sleep 2
 Ctrl+A
 Ctrl+K
+Ctrl+L
 Type "# The new way:"
 Sleep 2s
 Ctrl+A
