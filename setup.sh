@@ -214,7 +214,7 @@ download_plugin_files() {
         echo ""
         echo "Alternative installation methods:"
         echo "  1. Clone the repository manually: git clone https://github.com/michakfromparis/zsh-pnpm-completions.git"
-        echo "  2. Then run: cd zsh-pnpm-completions && ./auto-install.sh"
+        echo "  2. Then run: cd zsh-pnpm-completions && ./setup.sh"
         echo ""
         return 1
     fi
@@ -567,10 +567,10 @@ usage() {
     echo ""
     echo "One-liner remote installation:"
     echo "  # Using curl (recommended)"
-    echo "  bash <(curl -fsSL https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/auto-install.sh)"
+    echo "  bash <(curl -fsSL https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/setup.sh)"
     echo ""
     echo "  # Using wget"
-    echo "  bash <(wget -qO- https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/auto-install.sh)"
+    echo "  bash <(wget -qO- https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/setup.sh)"
     echo ""
 }
 

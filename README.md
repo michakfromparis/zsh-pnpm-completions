@@ -73,10 +73,10 @@ Copy and paste this single command to install automatically:
 
 ```bash
 # Using curl (recommended)
-bash <(curl -fsSL https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/auto-install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/setup.sh)
 
 # Or using wget
-bash <(wget -qO- https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/auto-install.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/setup.sh)
 ```
 
 That's it! The script will:
@@ -94,18 +94,18 @@ That's it! The script will:
 If you want to clone the repository first:
 
 ```bash
-# Clone the repository and run auto-install
+# Clone the repository and run setup
 git clone https://github.com/michakfromparis/zsh-pnpm-completions.git
 cd zsh-pnpm-completions
-./auto-install.sh
+./setup.sh
 ```
 
 **Advanced options:**
 ```bash
-./auto-install.sh --help                    # Show all options
-./auto-install.sh --dry-run                 # Preview what would be done
-./auto-install.sh -m manual                 # Force manual installation
-./auto-install.sh -m oh-my-zsh              # Force Oh My Zsh installation
+./setup.sh --help                    # Show all options
+./setup.sh --dry-run                 # Preview what would be done
+./setup.sh -m manual                 # Force manual installation
+./setup.sh -m oh-my-zsh              # Force Oh My Zsh installation
 ```
 
 ### Manual Installation Methods
