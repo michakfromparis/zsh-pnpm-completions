@@ -8,22 +8,28 @@ Set Theme "Dracula"
 
 Ctrl+L
 Type "# Script Completion Demo"
-Enter
 Sleep 1s
+Ctrl+A
+Ctrl+K
 
 Type "# The old way:"
-Enter
+Sleep 1s
+Ctrl+A
+Ctrl+K
 Type "cat package.json | grep scripts -A 15"
 Enter
 Sleep 4s
-
+Type "pnpm tests:integration"
+Enter
+Sleep 1
+Ctrl+L
 Type "# The new way:"
 Enter
-Type "p "
-Sleep 1s
+Type "p te"
+Tab
+Tab
 Tab
 Sleep 2s
-Type "test:"
 Tab
 Sleep 2s
 Type "e2e"
@@ -32,4 +38,5 @@ Ctrl+C
 Sleep 500ms
 
 Type "# No more grep! 🎉"
+Enter
 Sleep 2s 
