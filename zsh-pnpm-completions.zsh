@@ -145,8 +145,31 @@ _pnpm_completion_global_commands() {
 }
 
 _pnpm_get_cached_packages() {
-  # Provide a list of common popular packages
-  local packages="react vue angular express lodash axios moment typescript eslint prettier webpack babel jest mocha chai next nuxt svelte solid react-dom react-router-dom"
+  local search_term="${words[CURRENT]}"
+  local packages=""
+  
+  # If user has typed something, search npm registry for matching packages
+  if [[ -n "$search_term" && ${#search_term} -ge 2 ]]; then
+    # Use npm search to find packages matching the search term
+    packages=$(timeout 3 npm search "$search_term" --json 2>/dev/null | jq -r '.[].name' 2>/dev/null | head -20)
+    
+    # If npm search fails or returns nothing, try a broader search
+    if [[ -z "$packages" ]]; then
+      packages=$(timeout 3 npm search "${search_term}*" --json 2>/dev/null | jq -r '.[].name' 2>/dev/null | head -15)
+    fi
+  fi
+  
+  # If no search term or search failed, provide popular packages that match the prefix
+  if [[ -z "$packages" ]]; then
+    local popular_packages="react vue angular express lodash axios moment typescript eslint prettier webpack babel jest mocha chai next nuxt svelte solid react-dom react-router-dom @types/node @types/react vite nodemon cors dotenv uuid bcrypt jsonwebtoken"
+    
+    # Filter popular packages by search term if provided
+    if [[ -n "$search_term" ]]; then
+      packages=$(echo "$popular_packages" | tr ' ' '\n' | grep -i "^$search_term" | head -10)
+    else
+      packages="$popular_packages"
+    fi
+  fi
   
   # Try to get recently used packages from pnpm store if available
   local store_path
@@ -154,14 +177,20 @@ _pnpm_get_cached_packages() {
   if [[ -n "$store_path" ]] && [[ -d "$store_path" ]]; then
     # Extract package names from store directory structure
     local recent_packages
-    recent_packages=$(find "$store_path" -name "package.json" -exec jq -r '.name // empty' {} \; 2>/dev/null | sort -u | head -20)
+    recent_packages=$(find "$store_path" -name "package.json" -exec jq -r '.name // empty' {} \; 2>/dev/null | sort -u | head -10)
     if [[ -n "$recent_packages" ]]; then
-      packages="$packages $recent_packages"
+      # Filter recent packages by search term if provided
+      if [[ -n "$search_term" ]]; then
+        recent_packages=$(echo "$recent_packages" | grep -i "^$search_term")
+      fi
+      if [[ -n "$recent_packages" ]]; then
+        packages="$packages $recent_packages"
+      fi
     fi
   fi
   
   # Return unique sorted packages
-  echo "$packages" | tr ' ' '\n' | sort -u | grep -v '^$'
+  echo "$packages" | tr ' ' '\n' | sort -u | grep -v '^$' | head -30
 }
 
 _pnpm_get_workspaces() {
