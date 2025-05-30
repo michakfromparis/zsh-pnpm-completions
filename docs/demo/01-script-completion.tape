@@ -9,18 +9,18 @@ Set Theme "Dracula"
 # Load user's zsh config for custom prompt
 Type "source ~/.zshrc"
 Enter
-Sleep 3s
-# Initialize completion system and load plugin
-Type "autoload -U compinit && compinit"
-Enter
-Sleep 1s
-Type "source ../zsh-pnpm-completions.plugin.zsh"
-Enter
 Sleep 1s
 Ctrl+L
+# Initialize completion system and load plugin
+# Type "autoload -U compinit && compinit"
+# Enter
+# Sleep 1s
+# Type "source ../zsh-pnpm-completions.plugin.zsh"
+# Enter
+# Sleep 1s
 
 Type "# Script Completion Demo"
-Sleep 1s
+Sleep 2s
 Ctrl+A
 Ctrl+K
 
@@ -31,7 +31,7 @@ Ctrl+K
 Type "cat package.json | grep scripts -A 15"
 Enter
 Sleep 4s
-Type "pnpm tests:integration"
+Type "pnpm test:integration"
 Enter
 Sleep 1
 Ctrl+L
@@ -40,15 +40,15 @@ Enter
 Type "p te"
 Tab
 Tab
+Sleep 2s
+Type "i"
+Tab
 Tab
 Sleep 2s
+Type "s"
 Tab
-Sleep 2s
-Type "e2e"
-Sleep 500ms
-Ctrl+C
-Sleep 500ms
-
-Type "# No more grep! 🎉"
 Enter
-Sleep 2s 
+Sleep 2s
+Type "# No more grep! Less Errors! Happy fingers 🎉"
+Sleep 4s
+Ctrl+L
