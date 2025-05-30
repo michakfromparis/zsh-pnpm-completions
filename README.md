@@ -20,7 +20,7 @@
 
 **🏢 Workspace Ready** - Full `pnpm workspace` support with workspace-aware completions
 
-**📦 30+ Aliases** - Every command has a short alias: `pa` = `pnpm add`, `pi` = `pnpm install`, etc.
+**📦 30+ Aliases** - Every command has a short alias: `p` = `pnpm`, `pa` = `pnpm add`, `pi` = `pnpm install`, etc.
 
 ## 🚀 **What it does**
 
@@ -37,20 +37,20 @@
 
 ```bash
 # 📝 Script completion from package.json (killer feature!)
-pnpm run <TAB>
-# → test, build, dev, start, lint, deploy
+pnpm run <TAB>            # → test, build, dev, start, lint
+p test<TAB>               # → test, test:unit, test:e2e
 
-# 🔍 Live npm search as you type
-pnpm add reac<TAB>
-# → react, react-dom, react-router-dom, react-scripts
+# 🔍 Live package search with real npm packages
+pnpm add reac<TAB>        # → react, react-dom, @types/react, etc.
+pa exp<TAB>               # → express, express-validator, express-rate-limit
+pnpm add @types<TAB>      # → @types/node, @types/react, etc.
 
-# ⚡ Smart patterns
-pa reac<TAB>
-# → react, react-dom, react-router-dom, react-scripts
+# 🗑️ Remove only installed packages
+pnpm remove <TAB>         # → react, express (only from package.json)
 
-# 🗑️ Remove installed packages
-pnpm remove <TAB>
-# → Shows only packages from your package.json
+# ⚡ Lightning fast aliases
+pa react typescript cors  # Same as: pnpm add react typescript cors
+pr react                  # Same as: pnpm remove react
 ```
 
 ## Requirements
@@ -233,7 +233,7 @@ Complete support for all pnpm commands with intelligent context-aware completion
 ```bash
 # 📝 Script completion from package.json (the killer feature!)
 pnpm run <TAB>            # → test, build, dev, start, lint
-prun test<TAB>            # → test, test:unit, test:e2e
+p test<TAB>               # → test, test:unit, test:e2e
 
 # 🔍 Live package search with real npm packages
 pnpm add reac<TAB>        # → react, react-dom, @types/react, etc.
