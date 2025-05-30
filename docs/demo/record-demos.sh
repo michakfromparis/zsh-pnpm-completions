@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Record all zsh-pnpm-completions demos
-# This script generates all demo GIFs using VHS
+# This script generates all demo GIFs using VHS and automatically cleans them
 
 set -e
 
@@ -21,6 +21,13 @@ if ! command -v vhs &> /dev/null; then
     exit 1
 fi
 
+# Check if FFmpeg is installed
+if ! command -v ffmpeg &> /dev/null; then
+    echo -e "${RED}❌ FFmpeg is not installed. Please install it first:${NC}"
+    echo -e "${YELLOW}   brew install ffmpeg${NC}"
+    exit 1
+fi
+
 # Get the script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -31,6 +38,40 @@ if [ ! -d "$EXAMPLE_DIR" ]; then
     echo -e "${RED}❌ Example directory not found at: $EXAMPLE_DIR${NC}"
     exit 1
 fi
+
+# Function to clean up GIF by removing first N frames
+clean_gif() {
+    local gif_file="$1"
+    local frames_to_remove="$2"
+    local gif_path="$SCRIPT_DIR/$gif_file"
+    
+    if [ -f "$gif_path" ]; then
+        echo -e "${YELLOW}   🧹 Removing first $frames_to_remove frames from $gif_file...${NC}"
+        
+        # Create temporary palette
+        ffmpeg -i "$gif_path" -vf "select='gte(n,$frames_to_remove)',palettegen" "$SCRIPT_DIR/temp_palette.png" -y &>/dev/null
+        
+        # Create cleaned GIF with palette
+        ffmpeg -i "$gif_path" -i "$SCRIPT_DIR/temp_palette.png" -lavfi "select='gte(n,$frames_to_remove)',paletteuse" "$SCRIPT_DIR/temp_clean.gif" -y &>/dev/null
+        
+        # Replace original with cleaned version
+        mv "$SCRIPT_DIR/temp_clean.gif" "$gif_path"
+        rm -f "$SCRIPT_DIR/temp_palette.png"
+        
+        echo -e "${GREEN}   ✨ Cleaned $gif_file successfully${NC}"
+    fi
+}
+
+# Function to get frames to remove for each demo
+get_frames_to_remove() {
+    local demo_file="$1"
+    case "$demo_file" in
+        "01-script-completion.tape") echo 80 ;;  # Remove setup commands
+        "02-package-search.tape") echo 0 ;;     # No cleanup needed
+        "03-aliases-speed.tape") echo 0 ;;      # No cleanup needed
+        *) echo 0 ;;
+    esac
+}
 
 # Function to record a demo
 record_demo() {
@@ -51,6 +92,12 @@ record_demo() {
         if [ -f "$gif_name" ]; then
             mv "$gif_name" "$SCRIPT_DIR/"
             echo -e "${GREEN}   📁 Moved to docs/demo/$gif_name${NC}"
+            
+            # Clean up the GIF if frames_to_remove is specified
+            local frames_to_remove=$(get_frames_to_remove "$demo_file")
+            if [ "$frames_to_remove" -gt 0 ] 2>/dev/null; then
+                clean_gif "$gif_name" "$frames_to_remove"
+            fi
         fi
     else
         echo -e "${RED}❌ Failed to record $demo_name${NC}"
@@ -85,7 +132,7 @@ echo -e "${BLUE}📊 Recording Summary:${NC}"
 echo -e "${GREEN}✅ $success_count/$total_count demos recorded successfully${NC}"
 
 if [ $success_count -eq $total_count ]; then
-    echo -e "${GREEN}🎉 All demos recorded! Ready to showcase your completions!${NC}"
+    echo -e "${GREEN}🎉 All demos recorded and cleaned! Ready to showcase your completions!${NC}"
     echo ""
     echo -e "${BLUE}📝 To use in your README:${NC}"
     echo -e "![Script Completion](docs/demo/01-script-completion.gif)"
