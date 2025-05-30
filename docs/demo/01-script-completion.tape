@@ -61,11 +61,11 @@ Type "in"
 Tab 2
 Type ":"
 Tab
-Type "s"
+Type "f"
 Tab
 Sleep 500ms
 Enter
 Sleep 2s
-Type "# No more grep 🤩! Less Errors ✅! Happy fingers 🎉"
+Type "# No more grep ⭐️! Less Errors ✅! Happy fingers 🎉"
 Sleep 4s
 Ctrl+L
