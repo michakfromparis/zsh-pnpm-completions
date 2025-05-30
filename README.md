@@ -22,6 +22,14 @@
 
 **📦 30+ Aliases** - Every command has a short alias: `p` = `pnpm`, `pa` = `pnpm add`, `pi` = `pnpm install`, etc.
 
+## 🎬 **See It In Action**
+
+**Script completion is the killer feature** - no more hunting through package.json files:
+
+![Script Completion Demo](docs/demo/01-script-completion.gif)
+
+*The old way vs. the new way - TAB completion transforms your workflow!*
+
 ## 🚀 **What it does**
 
 * **Script completion** from your `package.json` - the killer feature
@@ -35,11 +43,9 @@
 
 ## 🎯 **Live Demo**
 
-```bash
-# 📝 Script completion from package.json (killer feature!)
-pnpm run <TAB>            # → test, build, dev, start, lint
-p test<TAB>               # → test, test:unit, test:e2e
+The demo above shows script completion in action, but here are more examples of what you can do:
 
+```bash
 # 🔍 Live package search with real npm packages
 pnpm add reac<TAB>        # → react, react-dom, @types/react, etc.
 pa exp<TAB>               # → express, express-validator, express-rate-limit
