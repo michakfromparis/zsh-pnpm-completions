@@ -6,6 +6,10 @@ Set Height 600
 Set PlaybackSpeed 1.5
 Set Theme "Dracula"
 
+# Load user's zsh config for custom prompt
+Type "source ~/.zshrc"
+Enter
+Sleep 3s
 # Initialize completion system and load plugin
 Type "autoload -U compinit && compinit"
 Enter
