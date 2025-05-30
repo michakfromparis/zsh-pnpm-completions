@@ -28,6 +28,16 @@ if ! command -v ffmpeg &> /dev/null; then
     exit 1
 fi
 
+# Check if gifsicle is installed for optimization
+if ! command -v gifsicle &> /dev/null; then
+    echo -e "${YELLOW}⚠️  gifsicle not found. Installing for GIF optimization...${NC}"
+    if command -v brew &> /dev/null; then
+        brew install gifsicle &>/dev/null
+    else
+        echo -e "${YELLOW}   Please install gifsicle manually for optimal file sizes${NC}"
+    fi
+fi
+
 # Get the script directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
@@ -62,13 +72,37 @@ clean_gif() {
     fi
 }
 
+# Function to optimize GIF file size
+optimize_gif() {
+    local gif_file="$1"
+    local gif_path="$SCRIPT_DIR/$gif_file"
+    
+    if [ -f "$gif_path" ] && command -v gifsicle &> /dev/null; then
+        echo -e "${YELLOW}   🎯 Optimizing $gif_file...${NC}"
+        
+        # Get original size
+        local original_size=$(du -h "$gif_path" | cut -f1)
+        
+        # Optimize with gifsicle
+        gifsicle --optimize=3 --colors=256 "$gif_path" -o "$SCRIPT_DIR/temp_optimized.gif" &>/dev/null
+        
+        # Replace original with optimized version
+        mv "$SCRIPT_DIR/temp_optimized.gif" "$gif_path"
+        
+        # Get new size
+        local new_size=$(du -h "$gif_path" | cut -f1)
+        
+        echo -e "${GREEN}   📉 Optimized $gif_file: $original_size → $new_size${NC}"
+    fi
+}
+
 # Function to get frames to remove for each demo
 get_frames_to_remove() {
     local demo_file="$1"
     case "$demo_file" in
-        "01-script-completion.tape") echo 80 ;;  # Remove setup commands
-        "02-package-search.tape") echo 80 ;;     # No cleanup needed
-        "03-aliases-speed.tape") echo 80 ;;      # No cleanup needed
+        "01-script-completion.tape") echo 100 ;;  # Remove setup commands
+        "02-package-search.tape") echo 100 ;;    # Remove setup commands  
+        "03-aliases-speed.tape") echo 100 ;;     # Remove setup commands
         *) echo 0 ;;
     esac
 }
@@ -98,6 +132,9 @@ record_demo() {
             if [ "$frames_to_remove" -gt 0 ] 2>/dev/null; then
                 clean_gif "$gif_name" "$frames_to_remove"
             fi
+            
+            # Optimize the GIF file size
+            optimize_gif "$gif_name"
         fi
     else
         echo -e "${RED}❌ Failed to record $demo_name${NC}"
