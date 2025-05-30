@@ -1,7 +1,6 @@
 # zsh pnpm completions
 
 > Smart pnpm completions for Z-shell with live npm search and workspace support
-> I was tired of typing pnpm...
 
 ## ⚡ **Why This Helps**
 
@@ -9,16 +8,7 @@
 
 **🔍 Live npm Search** - Type `pnpm add reac<TAB>` and get real packages from npmjs.com including `react`, `react-dom`, and related packages.
 
-**🧠 Smart Suggestions** - Recognizes common patterns:
-- `reac` → `react`, `react-dom`, `react-router-dom`
-- `typ` → `typescript`, `@types/node`, `@types/react` 
-- `exp` → `express`, `express-validator`, `express-rate-limit`
-
-**⚡ Fast & Reliable** - 3-second timeout with smart fallbacks to popular packages
-
 **🎯 Context-Aware** - Knows the difference between `pnpm add` (suggests new packages) and `pnpm remove` (suggests installed packages)
-
-**🏢 Workspace Ready** - Full `pnpm workspace` support with workspace-aware completions
 
 **📦 30+ Aliases** - Every command has a short alias: `p` = `pnpm`, `pa` = `pnpm add`, `pi` = `pnpm install`, etc.
 
@@ -30,278 +20,32 @@
 
 *The old way vs. the new way - TAB completion transforms your workflow!*
 
-## 🚀 **What it does**
+## 🚀 **Quick Installation**
+
+Copy and paste this single command to install automatically:
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/setup.sh)
+```
+
+That's it! The script will detect your zsh plugin manager and configure everything automatically.
+
+> **Need more options?** See the [complete installation guide](docs/INSTALLATION.md) for manual installation methods.
+
+## 🎯 **What You Get**
 
 * **Script completion** from your `package.json` - the killer feature
 * **Live package search** from npm registry as you type
 * **Smart fallback** to 50+ popular packages (React, Vue, TypeScript, Express, etc.)
 * **Workspace-aware** completions via `pnpm-workspace.yaml`
-* **Global package** completion for `-g` commands
 * **All pnpm commands** including `dlx`, `patch`, `store`, `env`
-* **Intelligent filtering** - shows exact matches first
-* **Recently used packages** from your pnpm store cache
+* **Lightning-fast aliases** for every command
 
-## 🎯 **Live Demo**
+## 📚 **Documentation**
 
-The demo above shows script completion in action, but here are more examples of what you can do:
-
-```bash
-# 🔍 Live package search with real npm packages
-pnpm add reac<TAB>        # → react, react-dom, @types/react, etc.
-pa exp<TAB>               # → express, express-validator, express-rate-limit
-pnpm add @types<TAB>      # → @types/node, @types/react, etc.
-
-# 🗑️ Remove only installed packages
-pnpm remove <TAB>         # → react, express (only from package.json)
-
-# ⚡ Lightning fast aliases
-pa react typescript cors  # Same as: pnpm add react typescript cors
-pr react                  # Same as: pnpm remove react
-```
-
-## Requirements
-
-* **zsh** - Z-shell
-* **pnpm** - pnpm package manager
-* **jq** - For parsing npm registry responses (usually pre-installed)
-
-## Installation
-
-### 🚀 **One-Line Installation (Easiest)**
-
-Copy and paste this single command to install automatically:
-
-```bash
-# Using curl (recommended)
-bash <(curl -fsSL https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/setup.sh)
-```
-
-That's it! The script will:
-- ✅ Detect your zsh plugin manager automatically
-- ✅ Install using the best available method  
-- ✅ Configure your `.zshrc` automatically
-- ✅ Create backups before making changes
-- ✅ Work without sudo privileges
-- ✅ Fall back gracefully if needed
-
-> **Note:** If the one-liner fails (repository not yet public), use the local installation method below.
-
-### 🛠️ **Local Installation (For Development)**
-
-If you want to clone the repository first:
-
-```bash
-# Clone the repository and run setup
-git clone https://github.com/michakfromparis/zsh-pnpm-completions.git
-cd zsh-pnpm-completions
-./setup.sh
-```
-
-**Advanced options:**
-```bash
-./setup.sh --help                    # Show all options
-./setup.sh --dry-run                 # Preview what would be done
-./setup.sh -m manual                 # Force manual installation
-./setup.sh -m oh-my-zsh              # Force Oh My Zsh installation
-```
-
-### Manual Installation Methods
-
-If you prefer to install manually or the auto-install doesn't work for your setup:
-
-### Using Oh My Zsh! as custom plugin
-
-Clone zsh-pnpm-completions into your custom plugins repo
-
-```bash
-git clone https://github.com/michakfromparis/zsh-pnpm-completions ~/.oh-my-zsh/custom/plugins/zsh-pnpm-completions
-```
-
-Then load as a plugin in your `.zshrc`
-
-```bash
-plugins+=(zsh-pnpm-completions)
-```
-
-### Using Antigen
-
-```bash
-antigen bundle michakfromparis/zsh-pnpm-completions
-```
-
-### Using zplug
-
-```bash
-zplug "michakfromparis/zsh-pnpm-completions", defer:2
-```
-
-### Manually
-
-Clone this repository somewhere (`~/.zsh-pnpm-completions` for example)
-
-```bash
-git clone https://github.com/michakfromparis/zsh-pnpm-completions.git ~/.zsh-pnpm-completions
-```
-
-Then source it in your `.zshrc`
-
-```bash
-source ~/.zsh-pnpm-completions/zsh-pnpm-completions.plugin.zsh
-```
-
-## 🛠️ **Recommended Tools**
-
-These tools work beautifully with pnpm completions and will enhance your terminal experience:
-
-### [Powerlevel10k](https://github.com/romkatv/powerlevel10k) 
-The fastest and most customizable zsh theme. Perfect companion for productive development with excellent git integration and performance.
-
-### [Oh My Zsh](https://ohmyz.sh/)
-The most popular zsh framework with hundreds of plugins and themes. Makes zsh configuration easy and this plugin works seamlessly with it.
-
-## 🎮 **Power User Features**
-
-### 🔍 **Smart Package Discovery**
-
-The completion system uses multiple strategies to find packages:
-
-1. **Live npm registry search** - Real-time search as you type
-2. **Pattern matching** - Recognizes common package prefixes  
-3. **Popular package database** - 50+ curated popular packages
-4. **Local cache analysis** - Packages from your pnpm store
-5. **Exact match prioritization** - Most relevant results first
-
-### 📝 **Script Completion**
-
-Automatically reads your `package.json` and provides completions for:
-- `pnpm run <TAB>` - All available scripts
-- `pnpm <script-name>` - Direct script execution
-
-### 🏢 **Workspace Support**
-
-Detects `pnpm-workspace.yaml` and provides:
-- Workspace-aware package management
-- Cross-workspace script execution
-- Filter support for monorepos
-
-### 🌐 **Global Package Support**
-
-Commands like `pnpm add -g` and `pnpm remove -g` intelligently complete with globally installed packages.
-
-## ⚡ **30+ Time-Saving Aliases**
-
-Every pnpm command has a lightning-fast alias:
-
-| Alias | Command              | Description                          |
-| ----- | -------------------- | ------------------------------------ |
-| **p**     | pnpm                 | Short for pnpm                      |
-| **pa**    | pnpm add             | Add a package ⚡                     |
-| **pi**    | pnpm install         | Install dependencies                 |
-| **pr**    | pnpm remove          | Remove a package                     |
-| **pu**    | pnpm update          | Update packages                      |
-| **prun**  | pnpm run             | Run a script                         |
-| **px**    | pnpm exec            | Execute a command                    |
-| **pdx**   | pnpm dlx             | Download and execute                 |
-| **pad**   | pnpm add -D          | Add a dev dependency                 |
-| **pga**   | pnpm add -g          | Add a global package                 |
-| **pgr**   | pnpm remove -g       | Remove a global package              |
-| **pt**    | pnpm test            | Run tests                            |
-| **ps**    | pnpm start           | Start the project                    |
-| **pb**    | pnpm build           | Build the project                    |
-| **pd**    | pnpm dev             | Start development                    |
-| **pout**  | pnpm outdated        | Check for outdated packages         |
-| **pwhy**  | pnpm why             | Explain why a package is installed   |
-| **pls**   | pnpm list            | List installed packages             |
-| **paudit**| pnpm audit           | Audit for vulnerabilities           |
-| **pstore**| pnpm store           | Manage the pnpm store                |
-| **pconfig**| pnpm config         | Manage configuration                 |
-| **penv**  | pnpm env             | Manage Node.js environments         |
-| **ppatch**| pnpm patch           | Patch a package                      |
-| **ppub**  | pnpm publish         | Publish a package                    |
-| **pinit** | pnpm init            | Initialize a package.json            |
-| **pcreate**| pnpm create         | Create a new project                 |
-| **pprune**| pnpm prune           | Remove extraneous packages          |
-| **prefresh**| pnpm install --force| Force reinstall all dependencies    |
-| **pcheck**| pnpm list --depth=0  | Check top-level dependencies        |
-| **pclean**| pnpm store prune     | Clean the store                      |
-
-## 🛠️ **Supported pnpm Commands**
-
-Complete support for all pnpm commands with intelligent context-aware completions:
-
-### Package Management
-- `add` - Add packages with **live npm search**
-- `install` / `i` - Install all dependencies
-- `update` / `up` / `upgrade` - Update packages
-- `remove` / `rm` - Remove packages (suggests installed only)
-- `link` / `unlink` - Link/unlink packages
-- `import` - Import from other lockfiles
-- `rebuild` - Rebuild packages
-- `prune` - Remove extraneous packages
-
-### Script Execution & Development
-- `run` - Run package scripts (suggests from package.json)
-- `exec` - Execute commands
-- `dlx` - Download and execute packages
-- `test` / `start` / `build` / `dev` - Common script shortcuts
-
-### Project Management
-- `init` - Initialize package.json
-- `create` - Create new projects from templates
-- `publish` - Publish packages
-- `pack` - Create package tarballs
-
-### Information & Analysis
-- `list` / `ls` - List packages
-- `outdated` - Check for outdated packages
-- `why` - Explain package installations
-- `audit` - Security audit
-- `licenses` - License information
-
-### Store & Cache Management
-- `store` - Manage pnpm store
-- `fetch` - Fetch packages to store
-
-### Configuration & Environment
-- `config` - Manage configuration
-- `env` - Manage Node.js environments
-- `setup` - Setup pnpm
-
-### Advanced Features
-- `patch` / `patch-commit` / `patch-remove` - Package patching
-- `server` - Manage pnpm server
-
-### 🏢 **Workspace Support**
-- Full support for pnpm workspaces
-- Workspace-aware command completion
-- `pnpm-workspace.yaml` detection and parsing
-
-## 🎯 **Examples**
-
-```bash
-# 📝 Script completion from package.json (the killer feature!)
-pnpm run <TAB>            # → test, build, dev, start, lint
-p test<TAB>               # → test, test:unit, test:e2e
-
-# 🔍 Live package search with real npm packages
-pnpm add reac<TAB>        # → react, react-dom, @types/react, etc.
-pa exp<TAB>               # → express, express-validator, express-rate-limit
-pnpm add @types<TAB>      # → @types/node, @types/react, etc.
-
-# 🗑️ Remove only installed packages
-pnpm remove <TAB>         # → react, express (only from package.json)
-
-# ⚡ Lightning fast aliases
-pa react typescript cors  # Same as: pnpm add react typescript cors
-pr react                  # Same as: pnpm remove react
-```
-
-## 🚀 **Performance**
-
-- ⚡ **Sub-second completions** with 3-second timeout protection
-- 🧠 **Smart caching** of popular packages
-- 🎯 **Targeted searches** - only searches when you've typed 2+ characters
-- 🔄 **Graceful fallbacks** - never hangs or breaks your workflow
+- **[📖 Complete Features Guide](docs/FEATURES.md)** - All aliases, supported commands, and power user features
+- **[🛠️ Installation Guide](docs/INSTALLATION.md)** - Manual installation methods and troubleshooting  
+- **[🎬 Demo Scripts](docs/demo/)** - How the demo gifs were created
 
 ## Contributing
 
