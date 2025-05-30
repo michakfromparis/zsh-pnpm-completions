@@ -48,17 +48,22 @@ Type "# The new way:"
 Sleep 2s
 Ctrl+A
 Ctrl+K
-Type "p te"
-Tab
-Tab
-Sleep 2s
-Type "i"
-Tab
+Type "p t"
 Tab
 Sleep 2s
+Type "e"
+Tab 2
+Sleep 500ms
+Type ":"
+Tab
+Sleep 1s
+Type "in"
+Tab 2
+Type ":"
+Tab
 Type "s"
 Tab
-Tab
+Sleep 500ms
 Enter
 Sleep 2s
 Type "# No more grep 🤩! Less Errors ✅! Happy fingers 🎉"
