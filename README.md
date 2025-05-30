@@ -7,12 +7,12 @@
 
 **📝 Script Completion** - Type `pnpm run <TAB>` and instantly see all your package.json scripts. No more `cat package.json | grep scripts`.
 
-**🔍 Live npm Search** - Type `pnpm add loda<TAB>` and get real packages from npmjs.com including `lodash`, `lodash-es`, and related packages.
+**🔍 Live npm Search** - Type `pnpm add reac<TAB>` and get real packages from npmjs.com including `react`, `react-dom`, and related packages.
 
 **🧠 Smart Suggestions** - Recognizes common patterns:
 - `reac` → `react`, `react-dom`, `react-router-dom`
 - `typ` → `typescript`, `@types/node`, `@types/react` 
-- `loda` → `lodash`, `lodash-es`, `lodash.get`
+- `exp` → `express`, `express-validator`, `express-rate-limit`
 
 **⚡ Fast & Reliable** - 3-second timeout with smart fallbacks to popular packages
 
@@ -41,8 +41,8 @@ pnpm run <TAB>
 # → test, build, dev, start, lint, deploy
 
 # 🔍 Live npm search as you type
-pnpm add loda<TAB>
-# → lodash, lodash-es, lodash.get, lodash.merge
+pnpm add reac<TAB>
+# → react, react-dom, react-router-dom, react-scripts
 
 # ⚡ Smart patterns
 pa reac<TAB>
@@ -237,16 +237,15 @@ prun test<TAB>            # → test, test:unit, test:e2e
 
 # 🔍 Live package search with real npm packages
 pnpm add reac<TAB>        # → react, react-dom, @types/react, etc.
-pa loda<TAB>              # → lodash, lodash-es, lodash.get
+pa exp<TAB>               # → express, express-validator, express-rate-limit
 pnpm add @types<TAB>      # → @types/node, @types/react, etc.
 
 # 🗑️ Remove only installed packages
-pnpm remove <TAB>         # → lodash, express (only from package.json)
+pnpm remove <TAB>         # → react, express (only from package.json)
 
 # ⚡ Lightning fast aliases
-pa express cors helmet    # Same as: pnpm add express cors helmet
-pr lodash                 # Same as: pnpm remove lodash
-prun dev                  # Same as: pnpm run dev
+pa react typescript cors  # Same as: pnpm add react typescript cors
+pr react                  # Same as: pnpm remove react
 ```
 
 ## 🚀 **Performance**
