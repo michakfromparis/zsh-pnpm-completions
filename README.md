@@ -67,9 +67,31 @@ pr react                  # Same as: pnpm remove react
 
 ## Installation
 
-### 🚀 **Auto-Install Script (Recommended)**
+### 🚀 **One-Line Installation (Easiest)**
 
-For the easiest installation experience, use our smart auto-install script that detects your environment and installs the plugin automatically:
+Copy and paste this single command to install automatically:
+
+```bash
+# Using curl (recommended)
+bash <(curl -fsSL https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/auto-install.sh)
+
+# Or using wget
+bash <(wget -qO- https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/auto-install.sh)
+```
+
+That's it! The script will:
+- ✅ Detect your zsh plugin manager automatically
+- ✅ Install using the best available method  
+- ✅ Configure your `.zshrc` automatically
+- ✅ Create backups before making changes
+- ✅ Work without sudo privileges
+- ✅ Fall back gracefully if needed
+
+> **Note:** If the one-liner fails (repository not yet public), use the local installation method below.
+
+### 🛠️ **Local Installation (For Development)**
+
+If you want to clone the repository first:
 
 ```bash
 # Clone the repository and run auto-install
@@ -77,14 +99,6 @@ git clone https://github.com/michakfromparis/zsh-pnpm-completions.git
 cd zsh-pnpm-completions
 ./auto-install.sh
 ```
-
-The auto-install script will:
-- ✅ Detect your zsh plugin manager (Oh My Zsh, Antigen, zplug, Zinit, Prezto)
-- ✅ Install using the best available method
-- ✅ Automatically configure your `.zshrc`
-- ✅ Create backups before making changes
-- ✅ Fall back to manual installation if needed
-- ✅ Work without sudo privileges
 
 **Advanced options:**
 ```bash

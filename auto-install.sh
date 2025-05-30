@@ -11,6 +11,9 @@ PLUGIN_NAME="zsh-pnpm-completions"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 LOG_FILE="/tmp/zsh-pnpm-completions-install.log"
 BACKUP_DIR="$HOME/.zsh-pnpm-completions-backups"
+GITHUB_RAW_URL="https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main"
+TEMP_DIR=""
+REMOTE_EXECUTION=false
 
 # Colors for output
 RED='\033[0;31m'
@@ -112,6 +115,111 @@ detect_plugin_managers() {
     printf '%s\n' "${managers[@]}"
 }
 
+# Remote execution detection
+detect_remote_execution() {
+    # Check if we're in a git repository with the expected plugin files
+    if [ -f "$SCRIPT_DIR/zsh-pnpm-completions.zsh" ] && 
+       [ -f "$SCRIPT_DIR/zsh-pnpm-completions.plugin.zsh" ] && 
+       [ -f "$SCRIPT_DIR/zsh-pnpm-aliases.zsh" ]; then
+        REMOTE_EXECUTION=false
+        log_info "Running from local repository"
+    else
+        REMOTE_EXECUTION=true
+        log_info "Running in remote mode - will download files from GitHub"
+    fi
+}
+
+# Download utilities
+setup_temp_dir() {
+    TEMP_DIR=$(mktemp -d 2>/dev/null || mktemp -d -t 'zsh-pnpm-completions')
+    log_info "Created temporary directory: $TEMP_DIR"
+}
+
+cleanup_temp_dir() {
+    if [ -n "$TEMP_DIR" ] && [ -d "$TEMP_DIR" ]; then
+        rm -rf "$TEMP_DIR"
+        log_info "Cleaned up temporary directory"
+    fi
+}
+
+download_file() {
+    local file_name="$1"
+    local target_path="$2"
+    local url="$GITHUB_RAW_URL/$file_name"
+    
+    log_info "Downloading $file_name..."
+    
+    # Try curl first, then wget
+    if command -v curl >/dev/null 2>&1; then
+        if curl -fsSL "$url" -o "$target_path"; then
+            log_info "Successfully downloaded $file_name"
+            return 0
+        else
+            log_error "Failed to download $file_name with curl"
+            return 1
+        fi
+    elif command -v wget >/dev/null 2>&1; then
+        if wget -q "$url" -O "$target_path"; then
+            log_info "Successfully downloaded $file_name"
+            return 0
+        else
+            log_error "Failed to download $file_name with wget"
+            return 1
+        fi
+    else
+        log_error "Neither curl nor wget is available for downloading files"
+        return 1
+    fi
+}
+
+download_plugin_files() {
+    if [ "$REMOTE_EXECUTION" = false ]; then
+        return 0  # No need to download if running locally
+    fi
+    
+    log_info "Attempting to download plugin files from GitHub..."
+    log_info "Note: This requires the repository to be publicly accessible"
+    
+    setup_temp_dir
+    
+    local files=(
+        "zsh-pnpm-completions.zsh"
+        "zsh-pnpm-completions.plugin.zsh"
+        "zsh-pnpm-aliases.zsh"
+        "README.md"
+        "LICENSE"
+    )
+    
+    local success=true
+    for file in "${files[@]}"; do
+        if ! download_file "$file" "$TEMP_DIR/$file"; then
+            success=false
+            break
+        fi
+    done
+    
+    if [ "$success" = true ]; then
+        # Update SCRIPT_DIR to point to temp directory for remote execution
+        SCRIPT_DIR="$TEMP_DIR"
+        log_success "All plugin files downloaded successfully"
+        return 0
+    else
+        cleanup_temp_dir
+        log_error "Failed to download required plugin files from GitHub"
+        echo ""
+        echo "This could be because:"
+        echo "  1. The repository is not yet public"
+        echo "  2. Network connectivity issues"
+        echo "  3. GitHub is temporarily unavailable"
+        echo ""
+        echo "Alternative installation methods:"
+        echo "  1. Clone the repository manually: git clone https://github.com/michakfromparis/zsh-pnpm-completions.git"
+        echo "  2. Then run: cd zsh-pnpm-completions && ./auto-install.sh"
+        echo ""
+        return 1
+    fi
+}
+
 # Dependency checking
 check_dependencies() {
     local missing_deps=()
@@ -122,9 +230,16 @@ check_dependencies() {
         missing_deps+=("zsh")
     fi
     
-    # Check git
-    if ! command -v git >/dev/null 2>&1; then
+    # Check git (not required for remote execution)
+    if [ "$REMOTE_EXECUTION" = false ] && ! command -v git >/dev/null 2>&1; then
         missing_deps+=("git")
+    fi
+    
+    # Check download tools for remote execution
+    if [ "$REMOTE_EXECUTION" = true ]; then
+        if ! command -v curl >/dev/null 2>&1 && ! command -v wget >/dev/null 2>&1; then
+            missing_deps+=("curl or wget")
+        fi
     fi
     
     # Check optional dependencies
@@ -450,6 +565,13 @@ usage() {
     echo "  $0 -m manual           # Force manual installation"
     echo "  $0 -m oh-my-zsh        # Force Oh My Zsh installation"
     echo ""
+    echo "One-liner remote installation:"
+    echo "  # Using curl (recommended)"
+    echo "  bash <(curl -fsSL https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/auto-install.sh)"
+    echo ""
+    echo "  # Using wget"
+    echo "  bash <(wget -qO- https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/auto-install.sh)"
+    echo ""
 }
 
 # Command line argument parsing
@@ -510,6 +632,18 @@ main() {
     log_info "Starting zsh-pnpm-completions auto-installation"
     log_info "Log file: $LOG_FILE"
     
+    # Detect execution mode and setup files
+    detect_remote_execution
+    
+    if [ "$REMOTE_EXECUTION" = true ]; then
+        if ! download_plugin_files; then
+            log_error "Failed to download required files from GitHub"
+            exit 1
+        fi
+        # Set cleanup trap for remote execution
+        trap cleanup_temp_dir EXIT
+    fi
+    
     # Environment detection
     local os shell
     os=$(detect_os)
@@ -554,7 +688,11 @@ main() {
         echo ""
         echo "Then try: pnpm run <TAB> to test completions!"
         echo ""
-        echo "For more information, see: $SCRIPT_DIR/README.md"
+        if [ "$REMOTE_EXECUTION" = false ]; then
+            echo "For more information, see: $SCRIPT_DIR/README.md"
+        else
+            echo "For more information, visit: https://github.com/michakfromparis/zsh-pnpm-completions"
+        fi
     else
         echo ""
         log_error "Installation failed. Check the log for details: $LOG_FILE"
