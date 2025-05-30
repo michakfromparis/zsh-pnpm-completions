@@ -67,8 +67,8 @@ get_frames_to_remove() {
     local demo_file="$1"
     case "$demo_file" in
         "01-script-completion.tape") echo 80 ;;  # Remove setup commands
-        "02-package-search.tape") echo 0 ;;     # No cleanup needed
-        "03-aliases-speed.tape") echo 0 ;;      # No cleanup needed
+        "02-package-search.tape") echo 80 ;;     # No cleanup needed
+        "03-aliases-speed.tape") echo 80 ;;      # No cleanup needed
         *) echo 0 ;;
     esac
 }
