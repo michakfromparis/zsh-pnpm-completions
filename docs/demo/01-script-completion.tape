@@ -1,4 +1,4 @@
-Output 01-script-completion.gif
+Output "01-script-completion.gif"
 Set Shell zsh
 Set FontSize 16
 Set Width 1200
@@ -19,7 +19,7 @@ Sleep 4s
 
 Type "# The new way:"
 Enter
-Type "pnpm run "
+Type "p "
 Sleep 1s
 Tab
 Sleep 2s

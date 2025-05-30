@@ -1,4 +1,4 @@
-Output 03-aliases-speed.gif
+Output "03-aliases-speed.gif"
 Set Shell zsh
 Set FontSize 16
 Set Width 1200

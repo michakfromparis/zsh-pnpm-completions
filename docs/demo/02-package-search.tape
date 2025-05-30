@@ -1,4 +1,4 @@
-Output 02-package-search.gif
+Output "02-package-search.gif"
 Set Shell zsh
 Set FontSize 16
 Set Width 1200
