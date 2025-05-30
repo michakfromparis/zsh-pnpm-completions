@@ -9,6 +9,11 @@ Set Theme "Dracula"
 # Load user's zsh config for custom prompt
 Type "source ~/.zshrc"
 Enter
+# Initialize completion system and load plugin
+Type "autoload -U compinit && compinit"
+Enter
+Type "source ../zsh-pnpm-completions.plugin.zsh"
+Enter
 Sleep 1s
 Ctrl+L
 # Initialize completion system and load plugin
@@ -33,10 +38,15 @@ Enter
 Sleep 4s
 Type "pnpm test:integration"
 Enter
-Sleep 1
-Ctrl+L
+Sleep 2
+Type "# Slow 🐌! Error prone ❌! Tired fingers 😩"
+Sleep 2
+Ctrl+A
+Ctrl+K
 Type "# The new way:"
-Enter
+Sleep 2s
+Ctrl+A
+Ctrl+K
 Type "p te"
 Tab
 Tab
@@ -47,8 +57,9 @@ Tab
 Sleep 2s
 Type "s"
 Tab
+Tab
 Enter
 Sleep 2s
-Type "# No more grep! Less Errors! Happy fingers 🎉"
+Type "# No more grep 🤩! Less Errors ✅! Happy fingers 🎉"
 Sleep 4s
 Ctrl+L
