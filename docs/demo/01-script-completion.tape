@@ -6,7 +6,15 @@ Set Height 600
 Set PlaybackSpeed 1.5
 Set Theme "Dracula"
 
+# Initialize completion system and load plugin
+Type "autoload -U compinit && compinit"
+Enter
+Sleep 1s
+Type "source ../zsh-pnpm-completions.plugin.zsh"
+Enter
+Sleep 1s
 Ctrl+L
+
 Type "# Script Completion Demo"
 Sleep 1s
 Ctrl+A
