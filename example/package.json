@@ -1,7 +1,7 @@
 {
   "name": "example-project",
   "version": "1.0.0",
-  "description": "Example project for testing pnpm completions",
+  "description": "Example project for testing zsh-pnpm-completions",
   "scripts": {
     "build": "echo 'Building project...'",
     "build:dev": "echo 'Building for development...'",
@@ -14,6 +14,9 @@
     "test": "echo 'Running tests...'",
     "test:unit": "echo 'Running unit tests...'",
     "test:integration": "echo 'Running integration tests...'",
+    "test:integration:light": "echo 'Running light integration tests...'",
+    "test:integration:heavy": "echo 'Running heavy integration tests...'",
+    "test:integration:full": "echo 'Running full integration tests...'",
     "test:e2e": "echo 'Running end-to-end tests...'",
     "test:watch": "echo 'Running tests in watch mode...'",
     "test:coverage": "echo 'Running tests with coverage...'",
