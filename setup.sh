@@ -505,13 +505,32 @@ uninstall_oh_my_zsh() {
         log_info "Plugin directory not found: $plugin_dir"
     fi
 
-    # Remove from plugins array in .zshrc
+    # Safely remove from plugins array in .zshrc
     if [ -f "$HOME/.zshrc" ]; then
-        # Remove from plugins array
-        sed -i.bak "/$PLUGIN_NAME/d" "$HOME/.zshrc"
-        # Also remove empty plugins array lines that might be left
-        sed -i.bak '/^plugins=(\s*)$/d' "$HOME/.zshrc"
-        log_success "Removed plugin from .zshrc plugins array"
+        # Create backup
+        cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
+
+        # Use awk to safely remove the plugin from the plugins array
+        # This preserves the array structure and only removes the specific plugin
+        awk '
+        /^plugins=\(/ {
+            # Found plugins array line
+            line = $0
+            # Remove the plugin name (with optional surrounding whitespace)
+            gsub(/[[:space:]]*zsh-pnpm-completions[[:space:]]*/, " ", line)
+            # Clean up any double spaces
+            gsub(/[[:space:]]+/, " ", line)
+            # Remove trailing space before closing paren
+            gsub(/[[:space:]]*\)$/, ")", line)
+            # Remove leading space after opening paren
+            gsub(/\([[:space:]]+/, "(", line)
+            print line
+            next
+        }
+        { print }
+        ' "$HOME/.zshrc" > "$HOME/.zshrc.tmp" && mv "$HOME/.zshrc.tmp" "$HOME/.zshrc"
+
+        log_success "Safely removed plugin from .zshrc plugins array"
     fi
 
     return 0
@@ -520,10 +539,16 @@ uninstall_oh_my_zsh() {
 uninstall_antigen() {
     log_info "Removing Antigen configuration..."
 
-    # Remove antigen bundle line from .zshrc
+    # Safely remove antigen bundle line from .zshrc
     if [ -f "$HOME/.zshrc" ]; then
-        sed -i.bak "/antigen bundle $PLUGIN_NAME/d" "$HOME/.zshrc"
-        log_success "Removed antigen bundle from .zshrc"
+        # Create backup
+        cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
+
+        # Only remove lines that exactly match the antigen bundle command
+        sed -i.tmp "/^antigen bundle $PLUGIN_NAME$/d" "$HOME/.zshrc"
+        rm -f "$HOME/.zshrc.tmp"
+
+        log_success "Safely removed antigen bundle from .zshrc"
     fi
 
     return 0
@@ -532,10 +557,16 @@ uninstall_antigen() {
 uninstall_zplug() {
     log_info "Removing zplug configuration..."
 
-    # Remove zplug line from .zshrc
+    # Safely remove zplug line from .zshrc
     if [ -f "$HOME/.zshrc" ]; then
-        sed -i.bak "/zplug.*$PLUGIN_NAME/d" "$HOME/.zshrc"
-        log_success "Removed zplug configuration from .zshrc"
+        # Create backup
+        cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
+
+        # Only remove lines that contain zplug and the plugin name
+        sed -i.tmp "/zplug.*$PLUGIN_NAME/d" "$HOME/.zshrc"
+        rm -f "$HOME/.zshrc.tmp"
+
+        log_success "Safely removed zplug configuration from .zshrc"
     fi
 
     return 0
@@ -544,10 +575,16 @@ uninstall_zplug() {
 uninstall_zinit() {
     log_info "Removing Zinit configuration..."
 
-    # Remove zinit load line from .zshrc
+    # Safely remove zinit load line from .zshrc
     if [ -f "$HOME/.zshrc" ]; then
-        sed -i.bak "/zinit.*$PLUGIN_NAME/d" "$HOME/.zshrc"
-        log_success "Removed zinit configuration from .zshrc"
+        # Create backup
+        cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
+
+        # Only remove lines that contain zinit load and the plugin name
+        sed -i.tmp "/zinit.*load.*$PLUGIN_NAME/d" "$HOME/.zshrc"
+        rm -f "$HOME/.zshrc.tmp"
+
+        log_success "Safely removed zinit configuration from .zshrc"
     fi
 
     return 0
@@ -562,13 +599,21 @@ uninstall_prezto() {
     if [ -d "$prezto_dir" ]; then
         rm -rf "$prezto_dir"
         log_success "Removed plugin directory: $prezto_dir"
+    else
+        log_info "Plugin directory not found: $prezto_dir"
     fi
 
-    # Remove from .zpreztorc
+    # Safely remove from .zpreztorc
     local zpreztorc="${ZDOTDIR:-$HOME}/.zpreztorc"
     if [ -f "$zpreztorc" ]; then
-        sed -i.bak "/$PLUGIN_NAME/d" "$zpreztorc"
-        log_success "Removed plugin from .zpreztorc"
+        # Create backup
+        cp "$zpreztorc" "$zpreztorc.backup.$(date +%Y%m%d_%H%M%S)"
+
+        # Use sed to safely remove the plugin from prezto modules
+        sed -i.tmp "/$PLUGIN_NAME/d" "$zpreztorc"
+        rm -f "$zpreztorc.tmp"
+
+        log_success "Safely removed plugin from .zpreztorc"
     fi
 
     return 0
@@ -587,10 +632,16 @@ uninstall_manual() {
         log_info "Plugin directory not found: $target_dir"
     fi
 
-    # Remove source line from .zshrc
+    # Safely remove source line from .zshrc
     if [ -f "$HOME/.zshrc" ]; then
-        sed -i.bak "/source.*$PLUGIN_NAME/d" "$HOME/.zshrc"
-        log_success "Removed source line from .zshrc"
+        # Create backup
+        cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
+
+        # Only remove lines that source the plugin
+        sed -i.tmp "/^source.*$PLUGIN_NAME/d" "$HOME/.zshrc"
+        rm -f "$HOME/.zshrc.tmp"
+
+        log_success "Safely removed source line from .zshrc"
     fi
 
     return 0
@@ -599,9 +650,21 @@ uninstall_manual() {
 # Remove configuration added by auto-installer
 remove_auto_config() {
     if [ -f "$HOME/.zshrc" ]; then
-        # Remove the marker comment and the line that follows it
-        sed -i.bak '/# Added by zsh-pnpm-completions auto-installer/,+1d' "$HOME/.zshrc"
-        log_info "Removed auto-installer configuration from .zshrc"
+        # Create backup
+        cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
+
+        # Safely remove the marker comment and the line that follows it
+        # Use awk to be more precise
+        awk '
+        /# Added by zsh-pnpm-completions auto-installer/ {
+            # Skip this line and the next one
+            getline
+            next
+        }
+        { print }
+        ' "$HOME/.zshrc" > "$HOME/.zshrc.tmp" && mv "$HOME/.zshrc.tmp" "$HOME/.zshrc"
+
+        log_info "Safely removed auto-installer configuration from .zshrc"
     fi
 }
 
