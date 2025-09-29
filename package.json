@@ -1,0 +1,52 @@
+{
+  "name": "zsh-pnpm-completions",
+  "version": "1.0.0",
+  "description": "Smart pnpm completions for Z-shell with live npm search and workspace support",
+  "main": "zsh-pnpm-completions.plugin.zsh",
+  "bin": {
+    "zsh-pnpm-completions": "./setup.sh"
+  },
+  "scripts": {
+    "install": "./setup.sh"
+  },
+  "files": [
+    "zsh-pnpm-completions.zsh",
+    "zsh-pnpm-completions.plugin.zsh",
+    "zsh-pnpm-aliases.zsh",
+    "setup.sh",
+    "install.sh",
+    "README.md",
+    "LICENSE",
+    "docs/"
+  ],
+  "keywords": [
+    "zsh",
+    "pnpm",
+    "completions",
+    "autocomplete",
+    "npm",
+    "package-manager",
+    "cli",
+    "shell",
+    "productivity"
+  ],
+  "author": "michakfromparis",
+  "license": "MIT",
+  "homepage": "https://github.com/michakfromparis/zsh-pnpm-completions#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michakfromparis/zsh-pnpm-completions.git"
+  },
+  "bugs": {
+    "url": "https://github.com/michakfromparis/zsh-pnpm-completions/issues"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "preferGlobal": true
+}

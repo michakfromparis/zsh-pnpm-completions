@@ -22,6 +22,18 @@
 
 ## 🚀 **Quick Installation**
 
+### Option 1: npx (Recommended)
+
+Install globally using npx:
+
+```bash
+npx zsh-pnpm-completions
+```
+
+This will automatically download and run the installer.
+
+### Option 2: Direct Script
+
 Copy and paste this single command to install automatically:
 
 ```bash
