@@ -491,6 +491,161 @@ verify_installation() {
     fi
 }
 
+# Uninstall functions
+uninstall_oh_my_zsh() {
+    local plugin_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/$PLUGIN_NAME"
+
+    log_info "Removing Oh My Zsh installation..."
+
+    # Remove plugin directory
+    if [ -d "$plugin_dir" ]; then
+        rm -rf "$plugin_dir"
+        log_success "Removed plugin directory: $plugin_dir"
+    else
+        log_info "Plugin directory not found: $plugin_dir"
+    fi
+
+    # Remove from plugins array in .zshrc
+    if [ -f "$HOME/.zshrc" ]; then
+        # Remove from plugins array
+        sed -i.bak "/$PLUGIN_NAME/d" "$HOME/.zshrc"
+        # Also remove empty plugins array lines that might be left
+        sed -i.bak '/^plugins=(\s*)$/d' "$HOME/.zshrc"
+        log_success "Removed plugin from .zshrc plugins array"
+    fi
+
+    return 0
+}
+
+uninstall_antigen() {
+    log_info "Removing Antigen configuration..."
+
+    # Remove antigen bundle line from .zshrc
+    if [ -f "$HOME/.zshrc" ]; then
+        sed -i.bak "/antigen bundle $PLUGIN_NAME/d" "$HOME/.zshrc"
+        log_success "Removed antigen bundle from .zshrc"
+    fi
+
+    return 0
+}
+
+uninstall_zplug() {
+    log_info "Removing zplug configuration..."
+
+    # Remove zplug line from .zshrc
+    if [ -f "$HOME/.zshrc" ]; then
+        sed -i.bak "/zplug.*$PLUGIN_NAME/d" "$HOME/.zshrc"
+        log_success "Removed zplug configuration from .zshrc"
+    fi
+
+    return 0
+}
+
+uninstall_zinit() {
+    log_info "Removing Zinit configuration..."
+
+    # Remove zinit load line from .zshrc
+    if [ -f "$HOME/.zshrc" ]; then
+        sed -i.bak "/zinit.*$PLUGIN_NAME/d" "$HOME/.zshrc"
+        log_success "Removed zinit configuration from .zshrc"
+    fi
+
+    return 0
+}
+
+uninstall_prezto() {
+    log_info "Removing Prezto installation..."
+
+    local prezto_dir="${ZDOTDIR:-$HOME}/.zprezto/modules/$PLUGIN_NAME"
+
+    # Remove plugin directory
+    if [ -d "$prezto_dir" ]; then
+        rm -rf "$prezto_dir"
+        log_success "Removed plugin directory: $prezto_dir"
+    fi
+
+    # Remove from .zpreztorc
+    local zpreztorc="${ZDOTDIR:-$HOME}/.zpreztorc"
+    if [ -f "$zpreztorc" ]; then
+        sed -i.bak "/$PLUGIN_NAME/d" "$zpreztorc"
+        log_success "Removed plugin from .zpreztorc"
+    fi
+
+    return 0
+}
+
+uninstall_manual() {
+    local target_dir="$HOME/.zsh-pnpm-completions"
+
+    log_info "Removing manual installation..."
+
+    # Remove plugin directory
+    if [ -d "$target_dir" ]; then
+        rm -rf "$target_dir"
+        log_success "Removed plugin directory: $target_dir"
+    else
+        log_info "Plugin directory not found: $target_dir"
+    fi
+
+    # Remove source line from .zshrc
+    if [ -f "$HOME/.zshrc" ]; then
+        sed -i.bak "/source.*$PLUGIN_NAME/d" "$HOME/.zshrc"
+        log_success "Removed source line from .zshrc"
+    fi
+
+    return 0
+}
+
+# Remove configuration added by auto-installer
+remove_auto_config() {
+    if [ -f "$HOME/.zshrc" ]; then
+        # Remove the marker comment and the line that follows it
+        sed -i.bak '/# Added by zsh-pnpm-completions auto-installer/,+1d' "$HOME/.zshrc"
+        log_info "Removed auto-installer configuration from .zshrc"
+    fi
+}
+
+# Main uninstall orchestration
+uninstall_plugin() {
+    log_info "Starting uninstallation..."
+
+    # Check if plugin is installed
+    if ! check_existing_config; then
+        log_warning "Plugin does not appear to be installed"
+        return 0
+    fi
+
+    # Try to detect which installation method was used and uninstall accordingly
+    local uninstalled=false
+
+    # Check for different installation types in order of likelihood
+    if [ -d "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/$PLUGIN_NAME" ]; then
+        uninstall_oh_my_zsh && uninstalled=true
+    elif [ -d "$HOME/.zsh-pnpm-completions" ]; then
+        uninstall_manual && uninstalled=true
+    elif [ -d "${ZDOTDIR:-$HOME}/.zprezto/modules/$PLUGIN_NAME" ]; then
+        uninstall_prezto && uninstalled=true
+    else
+        # Fallback: try to remove any auto-installer configurations
+        remove_auto_config
+        log_info "Attempted to remove auto-installer configurations"
+        uninstalled=true
+    fi
+
+    # Also clean up any remaining configurations that might exist
+    uninstall_antigen 2>/dev/null || true
+    uninstall_zplug 2>/dev/null || true
+    uninstall_zinit 2>/dev/null || true
+
+    if [ "$uninstalled" = true ]; then
+        log_success "Plugin uninstallation completed"
+        return 0
+    else
+        log_error "Could not determine installation method"
+        return 1
+    fi
+}
+
 # Main installation orchestration
 install_plugin() {
     local force_method="$1"
@@ -551,7 +706,7 @@ install_plugin() {
 usage() {
     echo "Usage: $0 [OPTIONS]"
     echo ""
-    echo "Auto-install zsh-pnpm-completions with environment detection"
+    echo "Install or uninstall zsh-pnpm-completions with environment detection"
     echo ""
     echo "Options:"
     echo "  -h, --help              Show this help message"
@@ -559,11 +714,13 @@ usage() {
     echo "                          Methods: oh-my-zsh, antigen, zplug, zinit, prezto, manual"
     echo "  -v, --verbose           Enable verbose logging"
     echo "  --dry-run              Show what would be done without making changes"
+    echo "  --uninstall            Remove zsh-pnpm-completions from your system"
     echo ""
     echo "Examples:"
     echo "  $0                      # Auto-detect and install"
     echo "  $0 -m manual           # Force manual installation"
     echo "  $0 -m oh-my-zsh        # Force Oh My Zsh installation"
+    echo "  $0 --uninstall         # Remove the plugin"
     echo ""
     echo "One-liner remote installation:"
     echo "  # Using curl (recommended)"
@@ -572,6 +729,9 @@ usage() {
     echo "  # Using wget"
     echo "  bash <(wget -qO- https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/setup.sh)"
     echo ""
+    echo "Uninstall:"
+    echo "  $0 --uninstall"
+    echo ""
 }
 
 # Command line argument parsing
@@ -579,7 +739,8 @@ parse_args() {
     local method=""
     local verbose=false
     local dry_run=false
-    
+    local uninstall=false
+
     while [[ $# -gt 0 ]]; do
         case $1 in
             -h|--help)
@@ -598,6 +759,10 @@ parse_args() {
                 dry_run=true
                 shift
                 ;;
+            --uninstall)
+                uninstall=true
+                shift
+                ;;
             *)
                 echo "Unknown option: $1"
                 usage
@@ -605,8 +770,8 @@ parse_args() {
                 ;;
         esac
     done
-    
-    echo "$method|$verbose|$dry_run"
+
+    echo "$method|$verbose|$dry_run|$uninstall"
 }
 
 # Main function
@@ -620,10 +785,10 @@ main() {
     done
     
     local args
-    local method verbose dry_run
-    
+    local method verbose dry_run uninstall
+
     args=$(parse_args "$@")
-    IFS='|' read -r method verbose dry_run <<< "$args"
+    IFS='|' read -r method verbose dry_run uninstall <<< "$args"
     
     print_banner
     
@@ -657,11 +822,33 @@ main() {
         echo "Switch to zsh or ensure zsh is your login shell for the plugin to work."
     fi
     
-    # Check dependencies
-    if ! check_dependencies; then
+    # Check dependencies (skip for uninstall)
+    if [ "$uninstall" = false ] && ! check_dependencies; then
         exit 1
     fi
-    
+
+    # Uninstall mode
+    if [ "$uninstall" = true ]; then
+        if uninstall_plugin; then
+            echo ""
+            log_success "🎉 Uninstallation completed successfully!"
+            echo ""
+            echo "The plugin has been removed from your system."
+            echo ""
+            if [ "$shell" = "zsh" ]; then
+                echo "To fully deactivate:"
+                echo "  • Run: source ~/.zshrc"
+                echo "  • Or restart your terminal"
+                echo ""
+            fi
+        else
+            echo ""
+            log_error "Uninstallation failed. Check the log for details: $LOG_FILE"
+            exit 1
+        fi
+        return 0
+    fi
+
     # Dry run mode
     if [ "$dry_run" = true ]; then
         log_info "DRY RUN MODE - No changes will be made"
@@ -676,7 +863,7 @@ main() {
         fi
         exit 0
     fi
-    
+
     # Perform installation
     if install_plugin "$method"; then
         echo ""
