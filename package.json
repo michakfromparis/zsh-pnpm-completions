@@ -26,7 +26,11 @@
     "install.sh",
     "README.md",
     "LICENSE",
-    "docs/"
+    "docs/FEATURES.md",
+    "docs/INSTALLATION.md",
+    "docs/demo/README.md",
+    "docs/demo/*.tape",
+    "docs/demo/record-demos.sh"
   ],
   "keywords": [
     "zsh",
