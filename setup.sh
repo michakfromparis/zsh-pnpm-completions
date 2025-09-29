@@ -682,12 +682,33 @@ main() {
         echo ""
         log_success "🎉 Installation completed successfully!"
         echo ""
-        echo "To activate the plugin:"
-        echo "  1. Restart your terminal, or"
-        echo "  2. Run: source ~/.zshrc"
+
+        # Provide activation instructions
+        echo "🎯 Next steps:"
         echo ""
-        echo "Then try: pnpm run <TAB> to test completions!"
+
+        if [ "$shell" = "zsh" ]; then
+            echo "   1. Activate the plugin:"
+            echo "      source ~/.zshrc"
+            echo ""
+            echo "   2. Test it works:"
+            echo "      pnpm run <TAB>"
+            echo ""
+        else
+            echo "   1. Switch to zsh:"
+            echo "      exec zsh"
+            echo ""
+            echo "   2. Activate the plugin:"
+            echo "      source ~/.zshrc"
+            echo ""
+            echo "   3. Test it works:"
+            echo "      pnpm run <TAB>"
+            echo ""
+        fi
+
+        echo "💡 Pro tip: You can also just restart your terminal instead of step 1."
         echo ""
+
         if [ "$REMOTE_EXECUTION" = false ]; then
             echo "For more information, see: $SCRIPT_DIR/README.md"
         else
