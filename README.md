@@ -16,7 +16,7 @@
 
 **Script completion is the killer feature** - no more hunting through package.json files:
 
-![Script Completion Demo](docs/demo/01-script-completion.gif)
+[![Script Completion Demo](https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/docs/demo/01-script-completion.gif)](https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/docs/demo/01-script-completion.gif)
 
 *The old way vs. the new way - TAB completion transforms your workflow!*
 
@@ -43,86 +43,6 @@ bash <(curl -fsSL https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-com
 That's it! The script will detect your zsh plugin manager and configure everything automatically.
 
 > **Need more options?** See the [complete installation guide](docs/INSTALLATION.md) for manual installation methods.
-
-## 🗑️ **Uninstall**
-
-To remove the plugin from your system:
-
-```bash
-# Via npx
-npx zsh-pnpm-completions --uninstall
-
-# Or via direct script
-bash <(curl -fsSL https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/setup.sh) --uninstall
-```
-
-The uninstaller will:
-- Remove plugin files from your system
-- Clean up configuration from `~/.zshrc`
-- Remove any auto-generated configurations
-
-After uninstalling, restart your terminal or run `source ~/.zshrc` to fully deactivate the plugin.
-
-## 🤖 **Fully Automated Publishing**
-
-This package is **fully automated** - just run `npm version` and everything happens automatically!
-
-### Setup for Automated Publishing
-
-To enable automated publishing, you need to:
-
-1. **Create an npm account** (if you don't have one)
-2. **Generate an access token**:
-   ```bash
-   npm login
-   # Follow the prompts, then run:
-   npm token create --read-only
-   # Copy the generated token
-   ```
-3. **Add the token to GitHub**:
-   - Go to your repository settings
-   - Navigate to "Secrets and variables" → "Actions"
-   - Click "New repository secret"
-   - Name: `NPM_TOKEN`
-   - Value: Paste your npm token
-
-### Publishing a New Version (1 Simple Command!)
-
-**For bug fixes:**
-```bash
-npm run release:patch
-```
-
-**For new features:**
-```bash
-npm run release:minor
-```
-
-**For breaking changes:**
-```bash
-npm run release:major
-```
-
-**That's it!** The scripts automatically bump the version, commit, tag, and push everything. ✨
-
-### Manual Process (if needed)
-
-1. **Update the version** in `package.json`:
-   ```bash
-   npm version patch  # for bug fixes
-   npm version minor  # for new features
-   npm version major  # for breaking changes
-   ```
-
-2. **Push everything**:
-   ```bash
-   git push && git push --tags
-   ```
-
-**That's it!** The GitHub Action will automatically:
-- ✅ Create a GitHub release with generated release notes
-- ✅ Publish to npm
-- ✅ Handle version conflicts safely
 
 ## 🛠️ **Development Scripts**
 
@@ -177,6 +97,25 @@ npm run clean
 * **Workspace-aware** completions via `pnpm-workspace.yaml`
 * **All pnpm commands** including `dlx`, `patch`, `store`, `env`
 * **Lightning-fast aliases** for every command
+
+## 🗑️ **Uninstall**
+
+To remove the plugin from your system:
+
+```bash
+# Via npx
+npx zsh-pnpm-completions --uninstall
+
+# Or via direct script
+bash <(curl -fsSL https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/setup.sh) --uninstall
+```
+
+The uninstaller will:
+- Remove plugin files from your system
+- Clean up configuration from `~/.zshrc`
+- Remove any auto-generated configurations
+
+After uninstalling, restart your terminal or run `source ~/.zshrc` to fully deactivate the plugin.
 
 ## 📚 **Documentation**
 
