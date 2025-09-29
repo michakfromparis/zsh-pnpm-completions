@@ -132,16 +132,19 @@ npm run release:major
 ```bash
 npm run test:setup
 ```
+*Works even without zsh installed - tests the installation logic*
 
 **Test the uninstaller (dry-run):**
 ```bash
 npm run test:uninstall
 ```
+*Test uninstallation logic - also works without zsh*
 
 **Validate everything before publishing:**
 ```bash
 npm run validate
 ```
+*Runs all tests + package validation. For realistic testing, run in zsh: `zsh -c "npm run test:setup"`*
 
 **Check current version:**
 ```bash

@@ -225,8 +225,8 @@ check_dependencies() {
     local missing_deps=()
     local optional_missing=()
     
-    # Check zsh
-    if ! command -v zsh >/dev/null 2>&1; then
+    # Check zsh (skip in dry-run mode for testing)
+    if [ "$REMOTE_EXECUTION" = false ] && [ "$dry_run" = false ] && ! command -v zsh >/dev/null 2>&1; then
         missing_deps+=("zsh")
     fi
     
@@ -818,8 +818,12 @@ main() {
     log_info "Detected shell: $shell"
     
     if [ "$shell" != "zsh" ]; then
-        log_warning "Current shell is $shell, but this plugin requires zsh"
-        echo "Switch to zsh or ensure zsh is your login shell for the plugin to work."
+        if [ "$dry_run" = true ]; then
+            log_info "Running in dry-run mode - testing logic without requiring zsh"
+        else
+            log_warning "Current shell is $shell, but this plugin requires zsh"
+            echo "Switch to zsh or ensure zsh is your login shell for the plugin to work."
+        fi
     fi
     
     # Check dependencies (skip for uninstall)
