@@ -63,9 +63,9 @@ The uninstaller will:
 
 After uninstalling, restart your terminal or run `source ~/.zshrc` to fully deactivate the plugin.
 
-## 🤖 **Automated Publishing**
+## 🤖 **Fully Automated Publishing**
 
-This package is automatically published to npm when a GitHub release is published.
+This package is **fully automated** - just run `npm version` and everything happens automatically!
 
 ### Setup for Automated Publishing
 
@@ -86,7 +86,7 @@ To enable automated publishing, you need to:
    - Name: `NPM_TOKEN`
    - Value: Paste your npm token
 
-### Publishing a New Version
+### Publishing a New Version (3 Simple Steps)
 
 1. **Update the version** in `package.json`:
    ```bash
@@ -95,19 +95,17 @@ To enable automated publishing, you need to:
    npm version major  # for breaking changes
    ```
 
-2. **Push the version commit and tag**:
+2. **Push everything**:
    ```bash
    git push && git push --tags
    ```
 
-3. **Create a GitHub release**:
-   - Go to your repository on GitHub
-   - Click "Releases" → "Create a new release"
-   - Select the version tag you just pushed
-   - Add release notes
-   - Click "Publish release"
+3. **Watch the magic happen** ✨
 
-The GitHub Action will automatically publish to npm when the release is published!
+**That's it!** The GitHub Action will automatically:
+- ✅ Create a GitHub release with generated release notes
+- ✅ Publish to npm
+- ✅ Handle version conflicts safely
 
 ## 🎯 **What You Get**
 
