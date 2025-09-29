@@ -44,6 +44,25 @@ That's it! The script will detect your zsh plugin manager and configure everythi
 
 > **Need more options?** See the [complete installation guide](docs/INSTALLATION.md) for manual installation methods.
 
+## 🗑️ **Uninstall**
+
+To remove the plugin from your system:
+
+```bash
+# Via npx
+npx zsh-pnpm-completions --uninstall
+
+# Or via direct script
+bash <(curl -fsSL https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/setup.sh) --uninstall
+```
+
+The uninstaller will:
+- Remove plugin files from your system
+- Clean up configuration from `~/.zshrc`
+- Remove any auto-generated configurations
+
+After uninstalling, restart your terminal or run `source ~/.zshrc` to fully deactivate the plugin.
+
 ## 🎯 **What You Get**
 
 * **Script completion** from your `package.json` - the killer feature
