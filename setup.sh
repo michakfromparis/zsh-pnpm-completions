@@ -946,7 +946,7 @@ main() {
             echo "      source ~/.zshrc"
             echo ""
             echo "   2. Test it works:"
-            echo "      pnpm run <TAB>"
+            echo "      p <TAB>"
             echo ""
         else
             echo "   1. Switch to zsh:"
@@ -956,7 +956,7 @@ main() {
             echo "      source ~/.zshrc"
             echo ""
             echo "   3. Test it works:"
-            echo "      pnpm run <TAB>"
+            echo "      p <TAB>"
             echo ""
         fi
 
