@@ -86,7 +86,26 @@ To enable automated publishing, you need to:
    - Name: `NPM_TOKEN`
    - Value: Paste your npm token
 
-### Publishing a New Version (3 Simple Steps)
+### Publishing a New Version (1 Simple Command!)
+
+**For bug fixes:**
+```bash
+npm run release:patch
+```
+
+**For new features:**
+```bash
+npm run release:minor
+```
+
+**For breaking changes:**
+```bash
+npm run release:major
+```
+
+**That's it!** The scripts automatically bump the version, commit, tag, and push everything. ✨
+
+### Manual Process (if needed)
 
 1. **Update the version** in `package.json`:
    ```bash
@@ -100,12 +119,52 @@ To enable automated publishing, you need to:
    git push && git push --tags
    ```
 
-3. **Watch the magic happen** ✨
-
 **That's it!** The GitHub Action will automatically:
 - ✅ Create a GitHub release with generated release notes
 - ✅ Publish to npm
 - ✅ Handle version conflicts safely
+
+## 🛠️ **Development Scripts**
+
+### Testing & Validation
+
+**Test the installer (dry-run):**
+```bash
+npm run test:setup
+```
+
+**Test the uninstaller (dry-run):**
+```bash
+npm run test:uninstall
+```
+
+**Validate everything before publishing:**
+```bash
+npm run validate
+```
+
+**Check current version:**
+```bash
+npm run check:version
+```
+
+**Clean up generated files:**
+```bash
+npm run clean
+```
+
+### Available Scripts Summary
+
+| Command | Description |
+|---------|-------------|
+| `npm run release:patch` | Release patch version (1.0.0 → 1.0.1) |
+| `npm run release:minor` | Release minor version (1.0.0 → 1.1.0) |
+| `npm run release:major` | Release major version (1.0.0 → 2.0.0) |
+| `npm run test:setup` | Test installer with dry-run |
+| `npm run test:uninstall` | Test uninstaller with dry-run |
+| `npm run validate` | Run all validations before publishing |
+| `npm run check:version` | Show current package version |
+| `npm run clean` | Remove generated files |
 
 ## 🎯 **What You Get**
 
