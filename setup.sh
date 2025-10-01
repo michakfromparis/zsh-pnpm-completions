@@ -561,11 +561,18 @@ uninstall_oh_my_zsh() {
         # Create backup
         cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
 
-        # Use awk to safely remove the plugin from the plugins array
-        # This preserves the array structure and only removes the specific plugin
+        # Use a more robust approach that handles both single-line and multi-line plugin arrays
+        # and removes orphaned plugin lines completely
         awk '
+        BEGIN {
+            in_plugins_block = 0
+            plugins_start_line = 0
+        }
+
         /^plugins=\(/ {
-            # Found plugins array line
+            # Found the start of a single-line plugins array
+            in_plugins_block = 1
+            plugins_start_line = NR
             line = $0
             # Remove the plugin name (with optional surrounding whitespace)
             gsub(/[[:space:]]*zsh-pnpm-completions[[:space:]]*/, " ", line)
@@ -575,13 +582,64 @@ uninstall_oh_my_zsh() {
             gsub(/[[:space:]]*\)$/, ")", line)
             # Remove leading space after opening paren
             gsub(/\([[:space:]]+/, "(", line)
+            # If the line becomes just "plugins=()" or "plugins=( )", remove it entirely
+            if (line ~ /^plugins=\(\s*\)$/) {
+                next
+            }
             print line
             next
         }
-        { print }
-        ' "$HOME/.zshrc" > "$HOME/.zshrc.tmp" && mv "$HOME/.zshrc.tmp" "$HOME/.zshrc"
 
-        log_success "Safely removed plugin from .zshrc plugins array"
+        /^plugins=\($/ {
+            # Found the start of a multi-line plugins array
+            in_plugins_block = 1
+            plugins_start_line = NR
+            print
+            next
+        }
+
+        in_plugins_block && /^[^\)]*$/ {
+            # Inside a multi-line plugins array, process each plugin line
+            line = $0
+            # Remove lines that are just the plugin name (with optional whitespace)
+            if (line ~ /^[[:space:]]*zsh-pnpm-completions[[:space:]]*$/) {
+                next  # Skip this line entirely
+            }
+            # Also clean any remaining references within other lines
+            gsub(/[[:space:]]*zsh-pnpm-completions[[:space:]]*/, " ", line)
+            # Clean up extra spaces
+            gsub(/[[:space:]]+/, " ", line)
+            # Remove leading/trailing whitespace from the line
+            sub(/^[[:space:]]+/, "", line)
+            sub(/[[:space:]]+$/, "", line)
+            # If line is now empty, skip it
+            if (length(line) == 0) {
+                next
+            }
+            print line
+            next
+        }
+
+        /^\)$/ && in_plugins_block {
+            # Found the end of a multi-line plugins array
+            in_plugins_block = 0
+            print
+            next
+        }
+
+        # Default: print all other lines unchanged
+        { print }
+        ' "$HOME/.zshrc" > "$HOME/.zshrc.tmp"
+
+        # Check if the modification was successful
+        if [ $? -eq 0 ]; then
+            mv "$HOME/.zshrc.tmp" "$HOME/.zshrc"
+            log_success "Safely removed plugin from .zshrc plugins array"
+        else
+            rm -f "$HOME/.zshrc.tmp"
+            log_error "Failed to modify .zshrc - backup preserved"
+            return 1
+        fi
     fi
 
     return 0
@@ -595,11 +653,18 @@ uninstall_antigen() {
         # Create backup
         cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
 
-        # Only remove lines that exactly match the antigen bundle command
-        sed -i.tmp "/^antigen bundle $PLUGIN_NAME$/d" "$HOME/.zshrc"
-        rm -f "$HOME/.zshrc.tmp"
+        # Remove lines that contain antigen bundle with the plugin name
+        sed -i.tmp "/antigen.*bundle.*$PLUGIN_NAME/d" "$HOME/.zshrc"
 
-        log_success "Safely removed antigen bundle from .zshrc"
+        # Check if sed succeeded
+        if [ $? -eq 0 ]; then
+            rm -f "$HOME/.zshrc.tmp"
+            log_success "Safely removed antigen bundle from .zshrc"
+        else
+            rm -f "$HOME/.zshrc.tmp"
+            log_error "Failed to modify .zshrc for antigen - backup preserved"
+            return 1
+        fi
     fi
 
     return 0
@@ -613,11 +678,18 @@ uninstall_zplug() {
         # Create backup
         cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
 
-        # Only remove lines that contain zplug and the plugin name
+        # Remove lines that contain zplug and the plugin name
         sed -i.tmp "/zplug.*$PLUGIN_NAME/d" "$HOME/.zshrc"
-        rm -f "$HOME/.zshrc.tmp"
 
-        log_success "Safely removed zplug configuration from .zshrc"
+        # Check if sed succeeded
+        if [ $? -eq 0 ]; then
+            rm -f "$HOME/.zshrc.tmp"
+            log_success "Safely removed zplug configuration from .zshrc"
+        else
+            rm -f "$HOME/.zshrc.tmp"
+            log_error "Failed to modify .zshrc for zplug - backup preserved"
+            return 1
+        fi
     fi
 
     return 0
@@ -631,11 +703,18 @@ uninstall_zinit() {
         # Create backup
         cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
 
-        # Only remove lines that contain zinit load and the plugin name
+        # Remove lines that contain zinit load and the plugin name
         sed -i.tmp "/zinit.*load.*$PLUGIN_NAME/d" "$HOME/.zshrc"
-        rm -f "$HOME/.zshrc.tmp"
 
-        log_success "Safely removed zinit configuration from .zshrc"
+        # Check if sed succeeded
+        if [ $? -eq 0 ]; then
+            rm -f "$HOME/.zshrc.tmp"
+            log_success "Safely removed zinit configuration from .zshrc"
+        else
+            rm -f "$HOME/.zshrc.tmp"
+            log_error "Failed to modify .zshrc for zinit - backup preserved"
+            return 1
+        fi
     fi
 
     return 0
@@ -662,9 +741,16 @@ uninstall_prezto() {
 
         # Use sed to safely remove the plugin from prezto modules
         sed -i.tmp "/$PLUGIN_NAME/d" "$zpreztorc"
-        rm -f "$zpreztorc.tmp"
 
-        log_success "Safely removed plugin from .zpreztorc"
+        # Check if sed succeeded
+        if [ $? -eq 0 ]; then
+            rm -f "$zpreztorc.tmp"
+            log_success "Safely removed plugin from .zpreztorc"
+        else
+            rm -f "$zpreztorc.tmp"
+            log_error "Failed to modify .zpreztorc - backup preserved"
+            return 1
+        fi
     fi
 
     return 0
@@ -688,11 +774,18 @@ uninstall_manual() {
         # Create backup
         cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
 
-        # Only remove lines that source the plugin
-        sed -i.tmp "/^source.*$PLUGIN_NAME/d" "$HOME/.zshrc"
-        rm -f "$HOME/.zshrc.tmp"
+        # Remove lines that source the plugin
+        sed -i.tmp "/source.*$PLUGIN_NAME/d" "$HOME/.zshrc"
 
-        log_success "Safely removed source line from .zshrc"
+        # Check if sed succeeded
+        if [ $? -eq 0 ]; then
+            rm -f "$HOME/.zshrc.tmp"
+            log_success "Safely removed source line from .zshrc"
+        else
+            rm -f "$HOME/.zshrc.tmp"
+            log_error "Failed to modify .zshrc for manual install - backup preserved"
+            return 1
+        fi
     fi
 
     return 0
@@ -713,9 +806,70 @@ remove_auto_config() {
             next
         }
         { print }
-        ' "$HOME/.zshrc" > "$HOME/.zshrc.tmp" && mv "$HOME/.zshrc.tmp" "$HOME/.zshrc"
+        ' "$HOME/.zshrc" > "$HOME/.zshrc.tmp"
 
-        log_info "Safely removed auto-installer configuration from .zshrc"
+        # Check if awk succeeded
+        if [ $? -eq 0 ]; then
+            mv "$HOME/.zshrc.tmp" "$HOME/.zshrc"
+            log_info "Safely removed auto-installer configuration from .zshrc"
+        else
+            rm -f "$HOME/.zshrc.tmp"
+            log_error "Failed to remove auto-installer configuration - backup preserved"
+            return 1
+        fi
+    fi
+}
+
+# Comprehensive cleanup of any remaining plugin references
+cleanup_remaining_references() {
+    log_info "Performing comprehensive cleanup of any remaining plugin references..."
+
+    local cleaned=false
+
+    # Clean up any remaining source lines that might use different patterns
+    if [ -f "$HOME/.zshrc" ]; then
+        # Create backup only if we haven't already in this session
+        local backup_pattern="$HOME/.zshrc.backup.$(date +%Y%m%d)*"
+        if ! compgen -G "$backup_pattern" > /dev/null; then
+            cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
+        fi
+
+        # Remove any lines that might still reference the plugin in various ways
+        sed -i.tmp \
+            -e "/$PLUGIN_NAME/d" \
+            -e "/zsh.*pnpm.*completion/d" \
+            "$HOME/.zshrc"
+
+        if [ $? -eq 0 ]; then
+            rm -f "$HOME/.zshrc.tmp"
+            log_info "Cleaned up any remaining plugin references from .zshrc"
+            cleaned=true
+        else
+            rm -f "$HOME/.zshrc.tmp"
+            log_warning "Could not clean up remaining references"
+        fi
+    fi
+
+    # Clean up any orphaned plugin directories
+    local dirs_to_clean=(
+        "${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/$PLUGIN_NAME"
+        "$HOME/.zsh-pnpm-completions"
+        "${ZDOTDIR:-$HOME}/.zprezto/modules/$PLUGIN_NAME"
+    )
+
+    for dir in "${dirs_to_clean[@]}"; do
+        if [ -d "$dir" ]; then
+            rm -rf "$dir"
+            log_info "Removed orphaned plugin directory: $dir"
+            cleaned=true
+        fi
+    done
+
+    # Note: Old backup file cleanup is handled by individual uninstall functions
+    # to avoid potential hangs during the uninstall process
+
+    if [ "$cleaned" = true ]; then
+        log_success "Comprehensive cleanup completed"
     fi
 }
 
@@ -746,13 +900,17 @@ uninstall_plugin() {
         uninstalled=true
     fi
 
-    # Also clean up any remaining configurations that might exist
+    # Also clean up any remaining configurations that might exist from other managers
     uninstall_antigen 2>/dev/null || true
     uninstall_zplug 2>/dev/null || true
     uninstall_zinit 2>/dev/null || true
 
+    # Final comprehensive cleanup to catch any edge cases
+    cleanup_remaining_references
+
     if [ "$uninstalled" = true ]; then
-        log_success "Plugin uninstallation completed"
+        log_success "Plugin uninstallation completed successfully"
+        log_info "You can safely restart your terminal or run 'source ~/.zshrc'"
         return 0
     else
         log_error "Could not determine installation method"
