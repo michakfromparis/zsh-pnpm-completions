@@ -2,6 +2,11 @@
 
 > Smart pnpm completions for Z-shell with live npm search and workspace support
 
+[![CI](https://github.com/michakfromparis/zsh-pnpm-completions/actions/workflows/test.yml/badge.svg)](https://github.com/michakfromparis/zsh-pnpm-completions/actions/workflows/test.yml)
+[![npm version](https://badge.fury.io/js/zsh-pnpm-completions.svg)](https://badge.fury.io/js/zsh-pnpm-completions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D14-brightgreen)](https://nodejs.org/)
+
 ## ⚡ **Why This Helps**
 
 **📝 Script Completion** - Type `pnpm run <TAB>` and instantly see all your package.json scripts. No more `cat package.json | grep scripts`.
