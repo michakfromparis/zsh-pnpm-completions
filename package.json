@@ -1,6 +1,6 @@
 {
   "name": "zsh-pnpm-completions",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Smart pnpm completions for Z-shell with live npm search and workspace support",
   "main": "zsh-pnpm-completions.plugin.zsh",
   "bin": {
