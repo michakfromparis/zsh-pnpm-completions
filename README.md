@@ -2,6 +2,19 @@
 
 > Smart pnpm completions for Z-shell with live npm search and workspace support
 
+[![CI](https://github.com/michakfromparis/zsh-pnpm-completions/actions/workflows/test.yml/badge.svg)](https://github.com/michakfromparis/zsh-pnpm-completions/actions/workflows/test.yml)
+[![npm version](https://badge.fury.io/js/zsh-pnpm-completions.svg)](https://badge.fury.io/js/zsh-pnpm-completions)
+[![npm downloads](https://img.shields.io/npm/dm/zsh-pnpm-completions.svg)](https://www.npmjs.com/package/zsh-pnpm-completions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D14-brightgreen)](https://nodejs.org/)
+
+[![GitHub stars](https://img.shields.io/github/stars/michakfromparis/zsh-pnpm-completions.svg)](https://github.com/michakfromparis/zsh-pnpm-completions/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/michakfromparis/zsh-pnpm-completions.svg)](https://github.com/michakfromparis/zsh-pnpm-completions/issues)
+[![GitHub last commit](https://img.shields.io/github/last-commit/michakfromparis/zsh-pnpm-completions.svg)](https://github.com/michakfromparis/zsh-pnpm-completions/commits/main)
+
+[![Zsh Plugin](https://img.shields.io/badge/zsh-plugin-orange.svg)](https://github.com/michakfromparis/zsh-pnpm-completions)
+[![Platforms](https://img.shields.io/badge/platforms-macOS%20%7C%20Linux-blue.svg)](https://github.com/michakfromparis/zsh-pnpm-completions#installation)
+
 ## ⚡ **Why This Helps**
 
 **📝 Script Completion** - Type `pnpm run <TAB>` and instantly see all your package.json scripts. No more `cat package.json | grep scripts`.
