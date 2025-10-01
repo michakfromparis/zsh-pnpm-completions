@@ -351,22 +351,23 @@ copy_files() {
 }
 
 install_oh_my_zsh() {
+    local no_aliases="$1"
     local plugin_dir="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/$PLUGIN_NAME"
-    
+
     log_info "Installing for Oh My Zsh..."
     log_info "Target directory: $plugin_dir"
-    
+
     if [ -d "$plugin_dir" ]; then
         log_info "Plugin directory already exists. Updating..."
         rm -rf "$plugin_dir"
     fi
-    
+
     create_directories "$plugin_dir"
     copy_files "$plugin_dir"
-    
+
     # Auto-configure plugins array in .zshrc
     backup_zshrc
-    
+
     if [ -f "$HOME/.zshrc" ]; then
         # Check if plugins array exists and add our plugin
         if grep -q "plugins=(" "$HOME/.zshrc"; then
@@ -382,65 +383,105 @@ install_oh_my_zsh() {
             # Create new plugins array
             inject_config "plugins=($PLUGIN_NAME)"
         fi
+
+        # Add environment variable if no aliases requested
+        if [ "$no_aliases" = "true" ]; then
+            inject_config "export ZSH_PNPM_NO_ALIASES=1"
+            log_info "Disabled aliases for this installation"
+        fi
     else
         inject_config "plugins=($PLUGIN_NAME)"
+        if [ "$no_aliases" = "true" ]; then
+            inject_config "export ZSH_PNPM_NO_ALIASES=1"
+            log_info "Disabled aliases for this installation"
+        fi
     fi
-    
+
     log_success "Oh My Zsh installation completed!"
     return 0
 }
 
 install_antigen() {
+    local no_aliases="$1"
     log_info "Installing for Antigen..."
-    
+
     backup_zshrc
     inject_config "antigen bundle $PLUGIN_NAME"
-    
+
+    if [ "$no_aliases" = "true" ]; then
+        inject_config "export ZSH_PNPM_NO_ALIASES=1"
+        log_info "Disabled aliases for this installation"
+    fi
+
     log_success "Antigen installation completed!"
     log_info "Run 'antigen reset' to reload if needed"
     return 0
 }
 
 install_zplug() {
+    local no_aliases="$1"
     log_info "Installing for zplug..."
-    
+
     backup_zshrc
     inject_config "zplug \"michakfromparis/zsh-pnpm-completions\", defer:2"
-    
+
+    if [ "$no_aliases" = "true" ]; then
+        inject_config "export ZSH_PNPM_NO_ALIASES=1"
+        log_info "Disabled aliases for this installation"
+    fi
+
     log_success "zplug installation completed!"
     log_info "Run 'zplug install' to install the plugin"
     return 0
 }
 
 install_zinit() {
+    local no_aliases="$1"
     log_info "Installing for Zinit..."
-    
+
     backup_zshrc
     inject_config "zinit load \"michakfromparis/zsh-pnpm-completions\""
-    
+
+    if [ "$no_aliases" = "true" ]; then
+        inject_config "export ZSH_PNPM_NO_ALIASES=1"
+        log_info "Disabled aliases for this installation"
+    fi
+
     log_success "Zinit installation completed!"
     return 0
 }
 
 install_prezto() {
+    local no_aliases="$1"
     log_info "Installing for Prezto..."
-    
+
     local prezto_dir="${ZDOTDIR:-$HOME}/.zprezto/modules/$PLUGIN_NAME"
-    
+
     create_directories "$prezto_dir"
     copy_files "$prezto_dir"
-    
-    # Create init.zsh for Prezto
-    cat > "$prezto_dir/init.zsh" << 'EOF'
+
+    # Create init.zsh for Prezto with conditional alias loading
+    if [ "$no_aliases" = "true" ]; then
+        cat > "$prezto_dir/init.zsh" << 'EOF'
+#
+# Loads zsh-pnpm-completions
+#
+
+export ZSH_PNPM_NO_ALIASES=1
+source "${0:h}/zsh-pnpm-completions.plugin.zsh"
+EOF
+    else
+        cat > "$prezto_dir/init.zsh" << 'EOF'
 #
 # Loads zsh-pnpm-completions
 #
 
 source "${0:h}/zsh-pnpm-completions.plugin.zsh"
 EOF
+    fi
 
     backup_zshrc
-    
+
     # Add to .zpreztorc if it exists
     local zpreztorc="${ZDOTDIR:-$HOME}/.zpreztorc"
     if [ -f "$zpreztorc" ]; then
@@ -451,28 +492,38 @@ EOF
     else
         log_warning ".zpreztorc not found, manual configuration may be needed"
     fi
-    
+
+    if [ "$no_aliases" = "true" ]; then
+        log_info "Disabled aliases for this installation"
+    fi
+
     log_success "Prezto installation completed!"
     return 0
 }
 
 install_manual() {
+    local no_aliases="$1"
     local target_dir="$HOME/.zsh-pnpm-completions"
-    
+
     log_info "Installing manually..."
     log_info "Target directory: $target_dir"
-    
+
     if [ -d "$target_dir" ]; then
         log_info "Plugin directory already exists. Updating..."
         rm -rf "$target_dir"
     fi
-    
+
     create_directories "$target_dir"
     copy_files "$target_dir"
-    
+
     backup_zshrc
     inject_config "source $target_dir/zsh-pnpm-completions.plugin.zsh"
-    
+
+    if [ "$no_aliases" = "true" ]; then
+        inject_config "export ZSH_PNPM_NO_ALIASES=1"
+        log_info "Disabled aliases for this installation"
+    fi
+
     log_success "Manual installation completed!"
     return 0
 }
@@ -712,18 +763,19 @@ uninstall_plugin() {
 # Main installation orchestration
 install_plugin() {
     local force_method="$1"
+    local no_aliases="$2"
     local managers=()
     local success=false
     
     if [ -n "$force_method" ]; then
         log_info "Forcing installation method: $force_method"
         case "$force_method" in
-            oh-my-zsh) install_oh_my_zsh && success=true ;;
-            antigen) install_antigen && success=true ;;
-            zplug) install_zplug && success=true ;;
-            zinit) install_zinit && success=true ;;
-            prezto) install_prezto && success=true ;;
-            manual) install_manual && success=true ;;
+            oh-my-zsh) install_oh_my_zsh "$no_aliases" && success=true ;;
+            antigen) install_antigen "$no_aliases" && success=true ;;
+            zplug) install_zplug "$no_aliases" && success=true ;;
+            zinit) install_zinit "$no_aliases" && success=true ;;
+            prezto) install_prezto "$no_aliases" && success=true ;;
+            manual) install_manual "$no_aliases" && success=true ;;
             *) log_error "Unknown installation method: $force_method" ;;
         esac
     else
@@ -734,25 +786,25 @@ install_plugin() {
         
         if [ ${#managers[@]} -eq 0 ]; then
             log_info "No plugin managers detected, using manual installation"
-            install_manual && success=true
+            install_manual "$no_aliases" && success=true
         else
             log_info "Detected plugin managers: ${managers[*]}"
             
             for manager in "${managers[@]}"; do
                 log_info "Attempting installation for $manager..."
                 case "$manager" in
-                    oh-my-zsh) install_oh_my_zsh && success=true && break ;;
-                    prezto) install_prezto && success=true && break ;;
-                    antigen) install_antigen && success=true && break ;;
-                    zplug) install_zplug && success=true && break ;;
-                    zinit) install_zinit && success=true && break ;;
+                    oh-my-zsh) install_oh_my_zsh "$no_aliases" && success=true && break ;;
+                    prezto) install_prezto "$no_aliases" && success=true && break ;;
+                    antigen) install_antigen "$no_aliases" && success=true && break ;;
+                    zplug) install_zplug "$no_aliases" && success=true && break ;;
+                    zinit) install_zinit "$no_aliases" && success=true && break ;;
                 esac
             done
-            
+
             # Fallback to manual if all failed
             if [ "$success" = false ]; then
                 log_warning "All plugin manager installations failed, falling back to manual installation"
-                install_manual && success=true
+                install_manual "$no_aliases" && success=true
             fi
         fi
     fi
@@ -777,12 +829,14 @@ usage() {
     echo "                          Methods: oh-my-zsh, antigen, zplug, zinit, prezto, manual"
     echo "  -v, --verbose           Enable verbose logging"
     echo "  --dry-run              Show what would be done without making changes"
+    echo "  --no-aliases           Install without loading aliases"
     echo "  --uninstall            Remove zsh-pnpm-completions from your system"
     echo ""
     echo "Examples:"
     echo "  $0                      # Auto-detect and install"
     echo "  $0 -m manual           # Force manual installation"
     echo "  $0 -m oh-my-zsh        # Force Oh My Zsh installation"
+    echo "  $0 --no-aliases        # Install without aliases"
     echo "  $0 --uninstall         # Remove the plugin"
     echo ""
     echo "One-liner remote installation:"
@@ -803,6 +857,7 @@ parse_args() {
     local verbose=false
     local dry_run=false
     local uninstall=false
+    local no_aliases=false
 
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -822,6 +877,10 @@ parse_args() {
                 dry_run=true
                 shift
                 ;;
+            --no-aliases)
+                no_aliases=true
+                shift
+                ;;
             --uninstall)
                 uninstall=true
                 shift
@@ -834,7 +893,7 @@ parse_args() {
         esac
     done
 
-    echo "$method|$verbose|$dry_run|$uninstall"
+    echo "$method|$verbose|$dry_run|$no_aliases|$uninstall"
 }
 
 # Main function
@@ -848,10 +907,10 @@ main() {
     done
     
     local args
-    local method verbose dry_run uninstall
+    local method verbose dry_run no_aliases uninstall
 
     args=$(parse_args "$@")
-    IFS='|' read -r method verbose dry_run uninstall <<< "$args"
+    IFS='|' read -r method verbose dry_run no_aliases uninstall <<< "$args"
     
     print_banner
     
@@ -932,7 +991,7 @@ main() {
     fi
 
     # Perform installation
-    if install_plugin "$method"; then
+    if install_plugin "$method" "$no_aliases"; then
         echo ""
         log_success "🎉 Installation completed successfully!"
         echo ""

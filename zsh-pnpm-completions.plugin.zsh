@@ -1,3 +1,3 @@
 0=${(%):-%N}
 source ${0:A:h}/zsh-pnpm-completions.zsh
-source ${0:A:h}/zsh-pnpm-aliases.zsh 
+[[ -z "$ZSH_PNPM_NO_ALIASES" ]] && source ${0:A:h}/zsh-pnpm-aliases.zsh 

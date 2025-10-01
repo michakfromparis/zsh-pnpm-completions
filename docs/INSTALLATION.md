@@ -42,6 +42,7 @@ cd zsh-pnpm-completions
 ```bash
 ./setup.sh --help                    # Show all options
 ./setup.sh --dry-run                 # Preview what would be done
+./setup.sh --no-aliases              # Install without aliases
 ./setup.sh -m manual                 # Force manual installation
 ./setup.sh -m oh-my-zsh              # Force Oh My Zsh installation
 ```
