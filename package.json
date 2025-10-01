@@ -8,12 +8,12 @@
   },
   "scripts": {
     "install": "./setup.sh",
-    "release:patch": "npm version patch && git push && git push --tags",
-    "release:minor": "npm version minor && git push && git push --tags",
-    "release:major": "npm version major && git push && git push --tags",
+    "test": "./tests/run-tests.sh",
     "test:setup": "./setup.sh --dry-run",
     "test:uninstall": "./setup.sh --uninstall --dry-run",
-    "validate": "npm run test:setup && npm run test:uninstall && npm pack --dry-run",
+    "test:completions": "./tests/test-completions.sh",
+    "test:shell": "zsh -n zsh-pnpm-completions.zsh && zsh -n zsh-pnpm-completions.plugin.zsh && zsh -n zsh-pnpm-aliases.zsh",
+    "validate": "npm run test && npm run test:uninstall && npm pack --dry-run",
     "check:version": "echo \"Current version: $(node -p 'require(\"./package.json\").version')\"",
     "prepublishOnly": "npm run validate",
     "clean": "rm -f *.tgz"
