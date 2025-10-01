@@ -22,12 +22,13 @@ jobs:
       with:
         node-version: '24'
 
-    - name: Install bats-core for shell testing
+    - name: Install bats-core and zsh for shell testing
       run: |
         if [ "$RUNNER_OS" == "Linux" ]; then
-          sudo apt-get update && sudo apt-get install -y bats
+          sudo apt-get update && sudo apt-get install -y bats zsh
         elif [ "$RUNNER_OS" == "macOS" ]; then
           brew install bats-core
+          # zsh is already installed on macOS
         fi
 
     - name: Setup test environment
