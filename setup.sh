@@ -975,6 +975,20 @@ main() {
         return 0
     fi
 
+    # Validate method if specified
+    if [ -n "$method" ]; then
+        case "$method" in
+            oh-my-zsh|antigen|zplug|zinit|prezto|manual)
+                # Valid method
+                ;;
+            *)
+                log_error "Unknown installation method: $method"
+                echo "Valid methods: oh-my-zsh, antigen, zplug, zinit, prezto, manual"
+                exit 1
+                ;;
+        esac
+    fi
+
     # Dry run mode
     if [ "$dry_run" = true ]; then
         log_info "DRY RUN MODE - No changes will be made"
