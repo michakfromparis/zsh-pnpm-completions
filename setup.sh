@@ -75,13 +75,44 @@ detect_os() {
 }
 
 detect_shell() {
+    # Check $SHELL first, as it's more reliable than environment variables
+    # that might be set by the script's execution environment
+    local shell_name
+    shell_name=$(basename "${SHELL:-unknown}")
+
+    # If SHELL clearly indicates zsh, trust it
+    if [ "$shell_name" = "zsh" ]; then
+        echo "zsh"
+        return
+    fi
+
+    # Check environment variables
     if [ -n "$ZSH_VERSION" ]; then
         echo "zsh"
+        return
     elif [ -n "$BASH_VERSION" ]; then
-        echo "bash"
-    else
-        echo "$(basename "$SHELL")"
+        # If BASH_VERSION is set but SHELL indicates zsh, we might be
+        # running a bash script from zsh - check parent process
+        if [ "$shell_name" = "bash" ]; then
+            echo "bash"
+        else
+            # Fallback: check parent process to distinguish bash script from zsh
+            local parent_shell
+            if command -v ps >/dev/null 2>&1; then
+                parent_shell=$(ps -p "$PPID" -o comm= 2>/dev/null | sed 's/^-//' | head -n1)
+                case "$parent_shell" in
+                    zsh*) echo "zsh" ;;
+                    *) echo "bash" ;;  # Default to bash if we can't determine
+                esac
+            else
+                echo "bash"  # Default fallback
+            fi
+        fi
+        return
     fi
+
+    # Final fallback to SHELL
+    echo "$shell_name"
 }
 
 detect_plugin_managers() {
@@ -178,7 +209,6 @@ download_plugin_files() {
     fi
     
     log_info "Attempting to download plugin files from GitHub..."
-    log_info "Note: This requires the repository to be publicly accessible"
     
     setup_temp_dir
     
