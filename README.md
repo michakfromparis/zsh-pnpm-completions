@@ -44,51 +44,6 @@ That's it! The script will detect your zsh plugin manager and configure everythi
 
 > **Need more options?** See the [complete installation guide](docs/INSTALLATION.md) for manual installation methods.
 
-## 🛠️ **Development Scripts**
-
-### Testing & Validation
-
-**Test the installer (dry-run):**
-```bash
-npm run test:setup
-```
-*Works even without zsh installed - tests the installation logic*
-
-**Test the uninstaller (dry-run):**
-```bash
-npm run test:uninstall
-```
-*Test uninstallation logic - also works without zsh*
-
-**Validate everything before publishing:**
-```bash
-npm run validate
-```
-*Runs all tests + package validation. For realistic testing, run in zsh: `zsh -c "npm run test:setup"`*
-
-**Check current version:**
-```bash
-npm run check:version
-```
-
-**Clean up generated files:**
-```bash
-npm run clean
-```
-
-### Available Scripts Summary
-
-| Command | Description |
-|---------|-------------|
-| `npm run release:patch` | Release patch version (1.0.0 → 1.0.1) |
-| `npm run release:minor` | Release minor version (1.0.0 → 1.1.0) |
-| `npm run release:major` | Release major version (1.0.0 → 2.0.0) |
-| `npm run test:setup` | Test installer with dry-run |
-| `npm run test:uninstall` | Test uninstaller with dry-run |
-| `npm run validate` | Run all validations before publishing |
-| `npm run check:version` | Show current package version |
-| `npm run clean` | Remove generated files |
-
 ## 🎯 **What You Get**
 
 * **Script completion** from your `package.json` - the killer feature
