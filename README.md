@@ -10,7 +10,7 @@
 
 **🎯 Context-Aware** - Knows the difference between `pnpm add` (suggests new packages) and `pnpm remove` (suggests installed packages)
 
-**📦 30+ Aliases** - Every command has a short alias: `p` = `pnpm`, `pa` = `pnpm add`, `pi` = `pnpm install`, etc.
+**📦 Optional 30+ Aliases** - Every command has a short alias: `p` = `pnpm`, `pa` = `pnpm add`, `pi` = `pnpm install`, etc. (can be disabled during installation)
 
 ## 🎬 **See It In Action**
 
@@ -44,6 +44,24 @@ That's it! The script will detect your zsh plugin manager and configure everythi
 
 > **Need more options?** See the [complete installation guide](docs/INSTALLATION.md) for manual installation methods.
 
+## ⚙️ **Installation Options**
+
+### Install Without Aliases
+
+If you prefer not to load the pnpm aliases (30+ shortcuts like `p` for `pnpm`, `pa` for `pnpm add`, etc.), you can install without them:
+
+```bash
+# Using npx
+npx zsh-pnpm-completions --no-aliases
+
+# Using direct script
+bash <(curl -fsSL https://raw.githubusercontent.com/michakfromparis/zsh-pnpm-completions/main/setup.sh) --no-aliases
+```
+
+This sets the `ZSH_PNPM_NO_ALIASES` environment variable, which prevents the plugin from loading the alias definitions. You can always re-enable aliases later by removing this variable from your shell configuration.
+
+**Note:** This only affects the loading of aliases - all completion functionality remains intact.
+
 ## 🎯 **What You Get**
 
 * **Script completion** from your `package.json` - the killer feature
@@ -51,7 +69,7 @@ That's it! The script will detect your zsh plugin manager and configure everythi
 * **Smart fallback** to 50+ popular packages (React, Vue, TypeScript, Express, etc.)
 * **Workspace-aware** completions via `pnpm-workspace.yaml`
 * **All pnpm commands** including `dlx`, `patch`, `store`, `env`
-* **Lightning-fast aliases** for every command
+* **Optional lightning-fast aliases** for every command (30+ shortcuts like `p` for `pnpm`)
 
 ## 🗑️ **Uninstall**
 
