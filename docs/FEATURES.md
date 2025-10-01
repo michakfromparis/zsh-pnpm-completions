@@ -29,7 +29,7 @@ Detects `pnpm-workspace.yaml` and provides:
 
 Commands like `pnpm add -g` and `pnpm remove -g` intelligently complete with globally installed packages.
 
-## ⚡ **30+ Time-Saving Aliases**
+## ⚡ **30+ Time-Saving Aliases (Optional)**
 
 Every pnpm command has a lightning-fast alias:
 
@@ -65,6 +65,8 @@ Every pnpm command has a lightning-fast alias:
 | **prefresh**| pnpm install --force| Force reinstall all dependencies    |
 | **pcheck**| pnpm list --depth=0  | Check top-level dependencies        |
 | **pclean**| pnpm store prune     | Clean the store                      |
+
+> **Note:** Aliases can be disabled during installation using `--no-aliases` flag. This sets the `ZSH_PNPM_NO_ALIASES` environment variable to prevent loading the alias definitions while keeping all completion functionality intact.
 
 ## 🛠️ **Supported pnpm Commands**
 
