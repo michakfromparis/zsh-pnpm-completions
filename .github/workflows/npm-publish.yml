@@ -20,6 +20,9 @@ jobs:
           node-version: '24'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Install zsh for shell validation
+        run: sudo apt-get update && sudo apt-get install -y zsh
+
       - name: Check package.json
         run: |
           echo "Package name: $(node -p "require('./package.json').name")"
