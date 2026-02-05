@@ -37,4 +37,7 @@ alias pcreate="pnpm create"
 alias pprune="pnpm prune"
 alias prefresh="pnpm install --force"
 alias pcheck="pnpm list --depth=0"
-alias pclean="pnpm store prune" 
+alias pclean="pnpm store prune"
+
+# yarn aliases
+alias y="yarn" 
