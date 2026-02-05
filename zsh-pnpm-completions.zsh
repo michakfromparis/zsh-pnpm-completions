@@ -67,7 +67,6 @@ _pnpm_get_scripts_from_package_json() {
   local -a options
   options=(
     ${(f)"$(_pnpm_parse_package_json_for_script_suggestions $package_json)"} \
-    env:"Prints list of environment variables available to the scripts at runtime" \
   )
 
   _describe -t package-scripts "package scripts" options
@@ -82,7 +81,6 @@ _pnpm_get_scripts_from_workspace_package_json() {
 
   options=(
     ${(f)"$(_pnpm_parse_package_json_for_script_suggestions $package_json)"} \
-    env:"Prints list of environment variables available to the scripts at runtime" \
   )
 
   _describe -t package-scripts "package scripts" options
