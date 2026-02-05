@@ -6,6 +6,10 @@ on:
     tags:
       - '*.*.*'
 
+permissions:
+  id-token: write  # Required for OIDC/trusted publishing
+  contents: read   # Required for repository access
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -48,8 +52,6 @@ jobs:
 
       - name: Publish to npm
         run: npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Success notification
         if: success()
