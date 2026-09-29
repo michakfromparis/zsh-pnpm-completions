@@ -48,6 +48,7 @@ install_oh_my_zsh() {
     cp zsh-pnpm-completions.zsh "$PLUGIN_DIR/"
     cp zsh-pnpm-completions.plugin.zsh "$PLUGIN_DIR/"
     cp zsh-pnpm-aliases.zsh "$PLUGIN_DIR/"
+    cp -R bin "$PLUGIN_DIR/"
     cp README.md "$PLUGIN_DIR/"
     cp LICENSE "$PLUGIN_DIR/"
 
@@ -88,6 +89,7 @@ install_manual() {
     cp zsh-pnpm-completions.zsh "$PLUGIN_DIR/"
     cp zsh-pnpm-completions.plugin.zsh "$PLUGIN_DIR/"
     cp zsh-pnpm-aliases.zsh "$PLUGIN_DIR/"
+    cp -R bin "$PLUGIN_DIR/"
     cp README.md "$PLUGIN_DIR/"
     cp LICENSE "$PLUGIN_DIR/"
 

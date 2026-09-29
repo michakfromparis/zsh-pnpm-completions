@@ -121,6 +121,23 @@ else
     exit 1
 fi
 
+# Test 7: `p` runs through wrappers that look it up on PATH
+echo "Test 7: p after wrappers"
+fake_bin=$(mktemp -d)
+printf '#!/bin/sh\necho "pnpm $*"\n' > "$fake_bin/pnpm"
+chmod +x "$fake_bin/pnpm"
+if [[ $(zsh -fc "
+    path=($fake_bin \$path)
+    source \"$SCRIPT_DIR/zsh-pnpm-completions.plugin.zsh\" 2>/dev/null
+    env FOO=1 p add react
+") == 'pnpm add react' ]]; then
+    echo "✅ p works after wrappers"
+else
+    echo "❌ p not found after wrappers"
+    exit 1
+fi
+rm -rf "$fake_bin"
+
 # Clean up
 cd "$SCRIPT_DIR"
 rm -rf /tmp/test-zsh /tmp/test-home
