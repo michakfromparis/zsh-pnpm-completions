@@ -68,7 +68,7 @@ Every pnpm command has a lightning-fast alias:
 
 > **Note:** Aliases can be disabled during installation using `--no-aliases` flag. This sets the `ZSH_PNPM_NO_ALIASES` environment variable to prevent loading the alias definitions while keeping all completion functionality intact.
 
-> **Tip:** Aliases also work after `sudo` (e.g. `sudo p install`). The plugin defines `alias sudo='sudo '` unless you already have a `sudo` alias.
+> **Tip:** Aliases also work after `sudo` (e.g. `sudo p install`). The plugin defines `alias sudo='sudo '` unless you already have a `sudo` alias. `p` also ships as a tiny executable at the end of your `PATH`, so it works after any wrapper: `nohup p dev`, `env NODE_ENV=production p build`, `xargs p add`.
 
 ## 🛠️ **Supported pnpm Commands**
 

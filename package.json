@@ -25,6 +25,7 @@
     "zsh-pnpm-completions.zsh",
     "zsh-pnpm-completions.plugin.zsh",
     "zsh-pnpm-aliases.zsh",
+    "bin/p",
     "setup.sh",
     "install.sh",
     "README.md",

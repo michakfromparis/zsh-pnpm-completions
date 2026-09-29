@@ -179,7 +179,8 @@ download_file() {
     local url="$GITHUB_RAW_URL/$file_name"
     
     log_info "Downloading $file_name..."
-    
+    mkdir -p "$(dirname "$target_path")"
+
     # Try curl first, then wget
     if command -v curl >/dev/null 2>&1; then
         if curl -fsSL "$url" -o "$target_path"; then
@@ -216,10 +217,11 @@ download_plugin_files() {
         "zsh-pnpm-completions.zsh"
         "zsh-pnpm-completions.plugin.zsh"
         "zsh-pnpm-aliases.zsh"
+        "bin/p"
         "README.md"
         "LICENSE"
     )
-    
+
     local success=true
     for file in "${files[@]}"; do
         if ! download_file "$file" "$TEMP_DIR/$file"; then
@@ -366,18 +368,25 @@ copy_files() {
         "zsh-pnpm-completions.zsh"
         "zsh-pnpm-completions.plugin.zsh"
         "zsh-pnpm-aliases.zsh"
+        "bin/p"
         "README.md"
         "LICENSE"
     )
-    
+
     for file in "${files[@]}"; do
         if [ -f "$SCRIPT_DIR/$file" ]; then
-            cp "$SCRIPT_DIR/$file" "$target_dir/"
+            mkdir -p "$target_dir/$(dirname "$file")"
+            cp "$SCRIPT_DIR/$file" "$target_dir/$file"
             log_info "Copied $file to $target_dir"
         else
             log_warning "File $file not found in $SCRIPT_DIR"
         fi
     done
+
+    # Downloaded files lose their executable bit
+    if [ -f "$target_dir/bin/p" ]; then
+        chmod +x "$target_dir/bin/p"
+    fi
 }
 
 install_oh_my_zsh() {
