@@ -104,6 +104,23 @@ else
     echo "⚠️  No aliases mode test inconclusive (may be expected in test environment)"
 fi
 
+# Test 6: Aliases expand after sudo, without clobbering a user-defined sudo alias
+echo "Test 6: Aliases after sudo"
+if zsh -fc "
+    source \"$SCRIPT_DIR/zsh-pnpm-aliases.zsh\"
+    eval 'f() { sudo p install }'
+    [[ \$(whence -f f) == *'sudo pnpm install'* ]]
+" && zsh -fc "
+    alias sudo='sudo -E'
+    source \"$SCRIPT_DIR/zsh-pnpm-aliases.zsh\"
+    [[ \${aliases[sudo]} == 'sudo -E' ]]
+"; then
+    echo "✅ Aliases expand after sudo"
+else
+    echo "❌ Aliases do not expand after sudo"
+    exit 1
+fi
+
 # Clean up
 cd "$SCRIPT_DIR"
 rm -rf /tmp/test-zsh /tmp/test-home
