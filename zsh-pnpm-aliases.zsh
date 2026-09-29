@@ -1,3 +1,6 @@
+# Trailing space makes zsh expand the next word as an alias too (`sudo p install`)
+(( ${+aliases[sudo]} )) || alias sudo='sudo '
+
 # pnpm aliases
 alias p="pnpm"
 alias pi="pnpm install"
